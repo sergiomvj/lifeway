@@ -76,9 +76,8 @@ const Index = () => {
             Planeje sua jornada<br />
             <span className="text-lilas">rumo aos Estados Unidos</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 font-figtree max-w-3xl mx-auto opacity-90">
-            Ferramentas inteligentes e especializadas para transformar seu sonho americano em realidade
-          </p>
+          <p className="text-xl md:text-2xl mb-8 font-figtree max-w-3xl mx-auto opacity-90">Ferramentas inteligentes e especializadas para
+transformar seu sonho americano em realidade</p>
           <Link to="/dreams">
             <Button variant="hero" size="lg" className="group">
               Começar agora
