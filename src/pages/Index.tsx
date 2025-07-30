@@ -4,43 +4,46 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle, Clock, Users, Heart, Calculator, Briefcase, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBackground from "@/assets/hero-background.jpg";
-
 const Index = () => {
-  const ferramentasDisponiveis = [
-    {
-      titulo: "Criador de Sonhos",
-      descricao: "Defina seus objetivos e trace o caminho ideal para alcançá-los",
-      icone: Heart,
-      link: "/dreams",
-      cor: "text-red-500"
-    },
-    {
-      titulo: "VisaMatch",
-      descricao: "Análise inteligente para descobrir o visto ideal para seu perfil",
-      icone: CheckCircle,
-      link: "/visamatch",
-      cor: "text-green-500"
-    },
-    {
-      titulo: "Especialista de Plantão",
-      descricao: "Chat com nossa IA especializada em imigração americana",
-      icone: MessageCircle,
-      link: "/especialista",
-      cor: "text-blue-500"
-    }
-  ];
-
-  const ferramentasFuturas = [
-    { titulo: "GetOpportunity", icone: Briefcase },
-    { titulo: "FamilyPlanner", icone: Users },
-    { titulo: "CalcWay", icone: Calculator },
-    { titulo: "Serviceway", icone: CheckCircle },
-    { titulo: "InterviewSim", icone: MessageCircle },
-    { titulo: "ProjectUSA", icone: ArrowRight }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const ferramentasDisponiveis = [{
+    titulo: "Criador de Sonhos",
+    descricao: "Defina seus objetivos e trace o caminho ideal para alcançá-los",
+    icone: Heart,
+    link: "/dreams",
+    cor: "text-red-500"
+  }, {
+    titulo: "VisaMatch",
+    descricao: "Análise inteligente para descobrir o visto ideal para seu perfil",
+    icone: CheckCircle,
+    link: "/visamatch",
+    cor: "text-green-500"
+  }, {
+    titulo: "Especialista de Plantão",
+    descricao: "Chat com nossa IA especializada em imigração americana",
+    icone: MessageCircle,
+    link: "/especialista",
+    cor: "text-blue-500"
+  }];
+  const ferramentasFuturas = [{
+    titulo: "GetOpportunity",
+    icone: Briefcase
+  }, {
+    titulo: "FamilyPlanner",
+    icone: Users
+  }, {
+    titulo: "CalcWay",
+    icone: Calculator
+  }, {
+    titulo: "Serviceway",
+    icone: CheckCircle
+  }, {
+    titulo: "InterviewSim",
+    icone: MessageCircle
+  }, {
+    titulo: "ProjectUSA",
+    icone: ArrowRight
+  }];
+  return <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="relative z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
@@ -63,10 +66,9 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroBackground})` }}
-        />
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
+        backgroundImage: `url(${heroBackground})`
+      }} />
         <div className="absolute inset-0 bg-gradient-to-r from-petroleo/80 to-petroleo/60"></div>
         
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
@@ -93,14 +95,12 @@ const Index = () => {
             <h2 className="text-4xl font-baskerville font-bold text-petroleo mb-4">
               Ferramentas Disponíveis
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Acesse nossas ferramentas especializadas e dê os primeiros passos rumo aos EUA
-            </p>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Acesse nossas ferramentas especializadas
+e dê os primeiros passos rumo aos EUA</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {ferramentasDisponiveis.map((ferramenta, index) => (
-              <Link key={index} to={ferramenta.link} className="group">
+            {ferramentasDisponiveis.map((ferramenta, index) => <Link key={index} to={ferramenta.link} className="group">
                 <Card className="h-full hover:shadow-2xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-0 hover:-translate-y-2">
                   <CardHeader className="text-center pb-4">
                     <div className="mx-auto w-16 h-16 bg-gradient-to-br from-lilas to-secondary rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -116,8 +116,7 @@ const Index = () => {
                     </CardDescription>
                   </CardContent>
                 </Card>
-              </Link>
-            ))}
+              </Link>)}
           </div>
         </div>
       </section>
@@ -135,8 +134,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
-            {ferramentasFuturas.map((ferramenta, index) => (
-              <Card key={index} className="opacity-60 text-center p-6 hover:opacity-80 transition-opacity bg-gradient-to-br from-gray-50 to-gray-100">
+            {ferramentasFuturas.map((ferramenta, index) => <Card key={index} className="opacity-60 text-center p-6 hover:opacity-80 transition-opacity bg-gradient-to-br from-gray-50 to-gray-100">
                 <ferramenta.icone className="w-8 h-8 mx-auto mb-3 text-gray-500" />
                 <h3 className="font-figtree font-semibold text-sm text-gray-700">
                   {ferramenta.titulo}
@@ -145,8 +143,7 @@ const Index = () => {
                   <Clock className="w-3 h-3 mr-1" />
                   Em breve
                 </Badge>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -198,8 +195,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
