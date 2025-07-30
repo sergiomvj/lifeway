@@ -18,12 +18,19 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'baskerville': ['Libre Baskerville', 'serif'],
+				'figtree': ['Figtree', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				petroleo: 'hsl(var(--petroleo))',
+				lilas: 'hsl(var(--lilas))',
+				'cinza-claro': 'hsl(var(--cinza-claro))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
