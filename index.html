@@ -11,6 +11,19 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Fix para o erro __WS_TOKEN__ undefined
+      window.__WS_TOKEN__ = window.__WS_TOKEN__ || '';
+      
+      // Global error handler para capturar erros que possam quebrar a aplicação
+      window.addEventListener('error', function(e) {
+        if (e.message && e.message.includes('__WS_TOKEN__')) {
+          console.warn('__WS_TOKEN__ error caught and handled');
+          e.preventDefault();
+          return false;
+        }
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
