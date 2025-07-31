@@ -91,7 +91,6 @@ export default {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-pattern': "url('/hero-background.jpg')",
       },
     },
   },
