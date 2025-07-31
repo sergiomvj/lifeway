@@ -6,9 +6,9 @@
 @layer base {
   :root {
     /* Cores personalizadas do projeto */
-    --petroleo: 200 100% 19%;  /* #084c61 convertido para HSL */
-    --lilas: 269 100% 91%;     /* #e9d5ff convertido para HSL */
-    --cinza-claro: 210 20% 95%; /* #f3f4f6 convertido para HSL */
+    --petroleo: 200 100% 19%;  /* #084c61 - HSL correto */
+    --lilas: 280 100% 93%;     /* #e9d5ff - HSL correto */
+    --cinza-claro: 210 20% 95%; /* #f3f4f6 - HSL correto */
     
     /* Shadcn color tokens */
     --background: 0 0% 100%;
