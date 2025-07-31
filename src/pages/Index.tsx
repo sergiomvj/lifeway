@@ -53,8 +53,9 @@ const Index = () => {
               <span className="text-xl font-baskerville font-bold text-petroleo">LifeWayUSA</span>
             </div>
             <nav className="hidden md:flex space-x-6">
-              <Link to="/dreams" className="text-gray-700 hover:text-petroleo transition-colors">Ferramentas</Link>
-              <Link to="/sobre" className="text-gray-700 hover:text-petroleo transition-colors">Sobre</Link>
+              <Link to="/ferramentas" className="text-gray-700 hover:text-petroleo transition-colors">Ferramentas</Link>
+              <Link to="/destinos" className="text-gray-700 hover:text-petroleo transition-colors">Destinos</Link>
+              <Link to="/blog" className="text-gray-700 hover:text-petroleo transition-colors">Blog</Link>
               <Link to="/contato" className="text-gray-700 hover:text-petroleo transition-colors">Contato</Link>
             </nav>
             <Link to="/login">
