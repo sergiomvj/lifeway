@@ -36,21 +36,30 @@ const BlogPage = () => {
 
   const fetchPosts = async () => {
     try {
-      // Buscar posts com categoria
+      // Buscar posts publicados
       const { data: postsData, error: postsError } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          blog_categories!inner(name)
-        `)
+        .select('*')
         .eq('published', true)
         .order('created_at', { ascending: false });
 
       if (postsError) throw postsError;
 
-      // Buscar tags para cada post
-      const postsWithTags = await Promise.all(
+      // Buscar categorias e tags para cada post
+      const postsWithDetails = await Promise.all(
         (postsData || []).map(async (post) => {
+          // Buscar categoria
+          let category = null;
+          if (post.category_id) {
+            const { data: categoryData } = await supabase
+              .from('blog_categories')
+              .select('name')
+              .eq('id', post.category_id)
+              .single();
+            category = categoryData;
+          }
+
+          // Buscar tags
           const { data: tagsData } = await supabase
             .from('blog_post_tags')
             .select(`
@@ -60,13 +69,13 @@ const BlogPage = () => {
 
           return {
             ...post,
-            category: post.blog_categories,
+            category,
             tags: tagsData?.map(item => item.blog_tags).filter(Boolean) || []
           };
         })
       );
 
-      setPosts(postsWithTags);
+      setPosts(postsWithDetails);
     } catch (error) {
       console.error('Erro ao buscar posts:', error);
     } finally {
@@ -112,7 +121,7 @@ const BlogPage = () => {
         {/* Posts Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {posts.map((post) => (
-            <Card key={post.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <Card key={post.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
               <Link to={`/blog/${post.slug}`} className="block">
                 <div className="relative">
                   {post.image_url ? (

@@ -1,9 +1,16 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import { Heart, BarChart3, LogOut, User, Menu, X } from "lucide-react";
+import { useUserContext } from "@/hooks/useUserContext";
+import { supabase } from "@/lib/supabaseClient";
+import { useState } from "react";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, userContext, isLoading } = useUserContext();
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleFerramentasClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -19,6 +26,29 @@ const Navbar = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Erro ao fazer logout:', error);
+        return;
+      }
+      
+      // Fechar menu mobile e redirecionar para home após logout
+      setIsMobileMenuOpen(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Erro inesperado ao fazer logout:', error);
+    }
+  };
+
+  const handleMobileLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  // Verificar se o usuário está logado
+  const isLoggedIn = !!user || !!userContext;
+
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,7 +61,7 @@ const Navbar = () => {
             <span className="text-xl font-bold text-gray-900">LifeWay USA</span>
           </Link>
 
-          {/* Menu Items */}
+          {/* Desktop Menu Items */}
           <div className="hidden md:flex items-center space-x-8">
             <Link 
               to="/" 
@@ -63,11 +93,137 @@ const Navbar = () => {
             >
               Contato
             </Link>
-            <Button asChild>
-              <Link to="/login">Entrar</Link>
+            <Link 
+              to="/dashboard" 
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
+            >
+              <BarChart3 className="h-4 w-4" />
+              Dashboard
+            </Link>
+            {isLoggedIn && (
+              <Link 
+                to="/profile" 
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
+              >
+                <User className="h-4 w-4" />
+                Perfil
+              </Link>
+            )}
+            {isLoggedIn ? (
+              <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                Sair
+              </Button>
+            ) : (
+              <Button asChild>
+                <Link to="/login">Entrar/Cadastrar</Link>
+              </Button>
+            )}
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+              <Link 
+                to="/" 
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={handleMobileLinkClick}
+              >
+                Home
+              </Link>
+              <button
+                onClick={(e) => {
+                  handleFerramentasClick(e);
+                  handleMobileLinkClick();
+                }}
+                className="block w-full text-left px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+              >
+                Ferramentas
+              </button>
+              <Link 
+                to="/destinos" 
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={handleMobileLinkClick}
+              >
+                Destinos
+              </Link>
+              <Link 
+                to="/blog" 
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={handleMobileLinkClick}
+              >
+                Blog
+              </Link>
+              <Link 
+                to="/contato" 
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={handleMobileLinkClick}
+              >
+                Contato
+              </Link>
+              <Link 
+                to="/dashboard" 
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                onClick={handleMobileLinkClick}
+              >
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  Dashboard
+                </div>
+              </Link>
+              {isLoggedIn && (
+                <Link 
+                  to="/profile" 
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                  onClick={handleMobileLinkClick}
+                >
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Perfil
+                  </div>
+                </Link>
+              )}
+              
+              {/* Mobile Auth Button */}
+              <div className="pt-2 border-t border-gray-200 mt-2">
+                {isLoggedIn ? (
+                  <Button 
+                    onClick={handleLogout} 
+                    variant="outline" 
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sair
+                  </Button>
+                ) : (
+                  <Link to="/login" onClick={handleMobileLinkClick}>
+                    <Button className="w-full">
+                      Entrar / Cadastrar
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

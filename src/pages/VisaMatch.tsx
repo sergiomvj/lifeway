@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, CheckCircle, ArrowRight, RotateCcw, FileText, Clock, DollarSign, Users } from "lucide-react";
-import { generateVisaRecommendations } from "@/lib/openai";
+import { openaiService } from "@/services/openaiService";
 
 interface Question {
   id: string;
@@ -118,8 +118,18 @@ const VisaMatch = () => {
 
   const calculateRecommendations = async () => {
     try {
-      // Tenta usar OpenAI para recomendações mais inteligentes
-      const aiRecommendations = await generateVisaRecommendations(answers);
+      // Use enhanced OpenAI service with retry logic and better error handling
+      const aiRecommendations = await openaiService.generateVisaRecommendations(answers, {
+        onRetry: (attempt, error) => {
+          console.log(`Tentativa ${attempt} falhou, tentando novamente...`, error.message);
+        },
+        onSuccess: (response, duration) => {
+          console.log(`Recomendações geradas com sucesso em ${duration}ms`);
+        },
+        onError: (error, attempts) => {
+          console.error(`Falha após ${attempts} tentativas:`, error.message);
+        }
+      });
       
       if (aiRecommendations && Array.isArray(aiRecommendations)) {
         setRecommendations(aiRecommendations.sort((a, b) => b.match - a.match));

@@ -7,6 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MessageCircle, Send, Bot, User, Lightbulb, FileText, Clock } from "lucide-react";
 import { generateChatResponse } from "@/lib/openai";
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 interface Message {
   id: string;
@@ -51,41 +53,35 @@ const Especialista = () => {
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+      const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollElement) {
+        scrollElement.scrollTop = scrollElement.scrollHeight;
+      }
     }
   }, [messages]);
 
   const generateBotResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     
-    // Busca por palavras-chave nas respostas pré-definidas
     for (const [key, response] of Object.entries(botResponses)) {
-      if (lowerMessage.includes(key.replace(' ', '')) || 
-          lowerMessage.includes(key) ||
-          key.split(' ').some(word => lowerMessage.includes(word))) {
+      if (lowerMessage.includes(key.replace('-', ' '))) {
         return response;
       }
     }
-
-    // Respostas baseadas em palavras-chave específicas
-    if (lowerMessage.includes('custo') || lowerMessage.includes('preço') || lowerMessage.includes('taxa')) {
-      return 'Os custos variam por tipo de visto: H1-B ($3,000-$5,000), F-1 ($160 + mensalidades), EB-5 ($800,000+), E-2 ($50,000-$200,000). Isso inclui taxas governamentais, advogados e outros custos associados.';
+    
+    if (lowerMessage.includes('visto') || lowerMessage.includes('visa')) {
+      return 'Existem vários tipos de vistos para os EUA. Os mais comuns são: H1-B (trabalho especializado), F-1 (estudante), B-1/B-2 (turismo/negócios), L-1 (transferência), O-1 (habilidades extraordinárias). Qual categoria te interessa mais?';
     }
     
-    if (lowerMessage.includes('advogado') || lowerMessage.includes('ajuda legal')) {
-      return 'Recomendo consultar um advogado de imigração especializado, especialmente para casos complexos. Eles podem avaliar seu perfil específico e orientar sobre a melhor estratégia. Posso ajudar com informações gerais, mas cada caso é único.';
+    if (lowerMessage.includes('trabalho') || lowerMessage.includes('emprego')) {
+      return 'Para trabalhar nos EUA, você precisará de um visto de trabalho. O H1-B é o mais comum para profissionais especializados. Também há o L-1 para transferências internas de empresas, O-1 para pessoas com habilidades extraordinárias, e E-2 para investidores. Você já tem uma oferta de trabalho?';
     }
     
-    if (lowerMessage.includes('inglês') || lowerMessage.includes('idioma')) {
-      return 'O domínio do inglês é importante para a maioria dos vistos. Não há teste obrigatório para todos os tipos, mas você precisará se comunicar na entrevista do consulado. Para alguns vistos profissionais, certificações como TOEFL podem ser úteis.';
+    if (lowerMessage.includes('tempo') || lowerMessage.includes('demora')) {
+      return 'Os tempos de processamento variam por tipo de visto: H1-B (3-8 meses), F-1 (2-3 meses), Green Card (1-5 anos dependendo da categoria). Há opções de processamento premium para alguns vistos. Qual processo específico te interessa?';
     }
     
-    if (lowerMessage.includes('idade') || lowerMessage.includes('idoso')) {
-      return 'Não há limite de idade para a maioria dos vistos americanos. No entanto, a idade pode influenciar alguns aspectos: vínculos com o país de origem, capacidade de trabalho, e tempo para retorno do investimento em educação.';
-    }
-
-    // Resposta padrão
-    return 'Essa é uma excelente pergunta! Para dar uma resposta mais precisa, preciso de mais detalhes sobre sua situação específica. Você poderia me contar mais sobre seu objetivo nos EUA, sua formação e experiência profissional?';
+    return 'Entendo sua pergunta sobre imigração. Posso ajudar com informações sobre vistos de trabalho, estudo, Green Card, documentação necessária, e processos consulares. Você poderia ser mais específico sobre qual aspecto da imigração te interessa?';
   };
 
   const handleSendMessage = async () => {
@@ -93,7 +89,7 @@ const Especialista = () => {
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: inputMessage,
+      content: inputMessage.trim(),
       sender: 'user',
       timestamp: new Date(),
       type: 'text'
@@ -155,17 +151,10 @@ const Especialista = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cinza-claro to-white">
-      <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="container mx-auto px-4 py-4">
-          <Link to="/" className="flex items-center space-x-2">
-            <ArrowLeft className="w-5 h-5 text-petroleo" />
-            <span className="text-petroleo font-figtree font-medium">Voltar</span>
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background">
+      <Navbar />
       
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
         <div className="text-center mb-6">
           <div className="flex items-center justify-center mb-4">
             <MessageCircle className="w-8 h-8 text-blue-500 mr-3" />
@@ -179,23 +168,27 @@ const Especialista = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Área de sugestões */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Sidebar com FAQ e informações - Mais larga */}
           <div className="lg:col-span-1 space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center text-sm">
-                  <Lightbulb className="w-4 h-4 mr-2 text-yellow-500" />
+            {/* Perguntas Frequentes na Sidebar */}
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center text-base text-blue-700">
+                  <Lightbulb className="w-5 h-5 mr-2 text-yellow-500" />
                   Perguntas Frequentes
                 </CardTitle>
+                <p className="text-xs text-blue-600">
+                  Clique para inserir no chat
+                </p>
               </CardHeader>
               <CardContent className="space-y-2">
                 {quickQuestions.map((question, index) => (
                   <Button
                     key={index}
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
-                    className="w-full text-left justify-start h-auto p-2 text-xs"
+                    className="w-full text-left justify-start h-auto p-3 text-xs leading-relaxed border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all"
                     onClick={() => handleQuickQuestion(question)}
                   >
                     {question}
@@ -204,7 +197,7 @@ const Especialista = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-green-50 border-green-200">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-2 mb-2">
                   <Clock className="w-4 h-4 text-green-500" />
@@ -215,11 +208,23 @@ const Especialista = () => {
                 </p>
               </CardContent>
             </Card>
+            
+            <Card className="bg-orange-50 border-orange-200">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FileText className="w-4 h-4 text-orange-500" />
+                  <span className="text-sm font-medium text-orange-600">Dica</span>
+                </div>
+                <p className="text-xs text-gray-600">
+                  Seja específico em suas perguntas para obter respostas mais precisas.
+                </p>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Área do chat */}
-          <div className="lg:col-span-3">
-            <Card className="h-[600px] flex flex-col">
+          {/* Área do chat - Ajustada para nova proporção */}
+          <div className="lg:col-span-2">
+            <Card className="h-[500px] flex flex-col">
               <CardHeader className="flex-shrink-0">
                 <div className="flex items-center space-x-2">
                   <Bot className="w-6 h-6 text-blue-500" />
@@ -307,9 +312,6 @@ const Especialista = () => {
                       <Send className="w-4 h-4" />
                     </Button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    💡 Dica: Seja específico em suas perguntas para obter respostas mais precisas.
-                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -333,6 +335,8 @@ const Especialista = () => {
           </CardContent>
         </Card>
       </div>
+      
+      <Footer />
     </div>
   );
 };

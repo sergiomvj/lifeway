@@ -4,8 +4,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Users, DollarSign, Briefcase, Search, Filter, Star, Heart } from 'lucide-react';
+import { MapPin, Users, DollarSign, Thermometer, Search, Filter, TrendingUp, GraduationCap, Briefcase, Building2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 interface City {
   id: string;
@@ -13,7 +15,14 @@ interface City {
   state: string;
   region?: string;
   population?: number;
+  average_temperature?: {
+    celsius: number;
+    fahrenheit: number;
+  };
   cost_of_living_index?: number;
+  job_market_score?: number;
+  education_score?: number;
+  business_opportunity_score?: number;
   job_opportunities?: string;
   main_destiny: boolean;
   description?: string;
@@ -117,23 +126,24 @@ const DestinosIndex = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-cinza-claro">
-      {/* Header */}
-      <section className="py-20 bg-gradient-to-r from-petroleo to-petroleo/90 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-baskerville font-bold mb-6">
+    <div className="min-h-screen bg-background">
+      <Navbar />
+
+      {/* Content */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-baskerville font-bold text-petroleo mb-4">
             Destinos Principais
           </h1>
-          <p className="text-xl opacity-90 max-w-3xl mx-auto font-figtree">
+          <p className="text-lg text-gray-600 font-figtree max-w-2xl mx-auto">
             Descubra as melhores cidades americanas para começar sua nova vida. 
             Explore oportunidades, custos de vida e qualidade de vida.
           </p>
         </div>
-      </section>
 
-      {/* Filtros */}
-      <section className="py-12 bg-white border-b">
-        <div className="container mx-auto px-4">
+        {/* Filtros */}
+        <section className="py-8 bg-white/50 backdrop-blur-sm rounded-lg border mb-8">
+          <div className="px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Busca */}
             <div className="relative">
@@ -199,12 +209,11 @@ const DestinosIndex = () => {
               Limpar Filtros
             </Button>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Lista de Cidades */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
+        {/* Lista de Cidades */}
+        <div className="max-w-7xl mx-auto">
           {filteredCities.length === 0 ? (
             <div className="text-center py-12">
               <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -225,7 +234,7 @@ const DestinosIndex = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredCities.map((city) => (
-                  <Card key={city.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+                  <Card key={city.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1">
                     {/* Imagem da Cidade */}
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -247,8 +256,8 @@ const DestinosIndex = () => {
                       </div>
                     </div>
 
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center justify-between">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between mb-2">
                         <CardTitle className="text-xl font-baskerville text-petroleo group-hover:text-lilas transition-colors">
                           {city.name}
                         </CardTitle>
@@ -256,43 +265,86 @@ const DestinosIndex = () => {
                           {city.state}
                         </Badge>
                       </div>
-                      {city.description && (
-                        <CardDescription className="text-gray-600 leading-relaxed">
-                          {city.description}
-                        </CardDescription>
-                      )}
-                    </CardHeader>
-
-                    <CardContent className="pt-0">
-                      {/* Estatísticas */}
-                      <div className="grid grid-cols-2 gap-4 mb-4">
+                      
+                      {/* População e Temperatura */}
+                      <div className="grid grid-cols-2 gap-3 mb-3">
                         {city.population && (
-                          <div className="flex items-center space-x-2">
-                            <Users className="w-4 h-4 text-petroleo" />
-                            <span className="text-sm text-gray-600">
+                          <div className="flex items-center space-x-1">
+                            <Users className="w-3 h-3 text-petroleo" />
+                            <span className="text-xs text-gray-600">
                               {formatPopulation(city.population)}
                             </span>
                           </div>
                         )}
-                        {city.cost_of_living_index && (
-                          <div className="flex items-center space-x-2">
-                            <DollarSign className="w-4 h-4 text-petroleo" />
-                            <span className="text-sm text-gray-600">
-                              Índice: {city.cost_of_living_index}
+                        {city.average_temperature && (
+                          <div className="flex items-center space-x-1">
+                            <span className="text-xs text-petroleo">🌡️</span>
+                            <span className="text-xs text-gray-600">
+                              {city.average_temperature.celsius}°C / {city.average_temperature.fahrenheit}°F
                             </span>
                           </div>
                         )}
                       </div>
 
-                      {/* Oportunidades de Trabalho */}
-                      {city.job_opportunities && (
-                        <div className="flex items-center space-x-2 mb-4">
-                          <Briefcase className="w-4 h-4 text-petroleo" />
-                          <span className="text-sm text-gray-600">
-                            {city.job_opportunities}
-                          </span>
-                        </div>
+                      {/* Descrição limitada a 150 caracteres */}
+                      {city.description && (
+                        <CardDescription className="text-gray-600 leading-relaxed text-sm">
+                          {city.description.length > 150 
+                            ? `${city.description.substring(0, 150)}...` 
+                            : city.description
+                          }
+                        </CardDescription>
                       )}
+                    </CardHeader>
+
+                    <CardContent className="pt-0">
+                      {/* Índices de Avaliação */}
+                      <div className="grid grid-cols-2 gap-2 mb-4">
+                        {city.cost_of_living_index && (
+                          <div className="bg-gray-50 rounded-lg p-2">
+                            <div className="flex items-center space-x-1 mb-1">
+                              <DollarSign className="w-3 h-3 text-petroleo" />
+                              <span className="text-xs font-medium text-gray-700">Custo de Vida</span>
+                            </div>
+                            <span className="text-sm font-semibold text-petroleo">
+                              {city.cost_of_living_index}
+                            </span>
+                          </div>
+                        )}
+                        {city.job_market_score && (
+                          <div className="bg-gray-50 rounded-lg p-2">
+                            <div className="flex items-center space-x-1 mb-1">
+                              <Briefcase className="w-3 h-3 text-petroleo" />
+                              <span className="text-xs font-medium text-gray-700">Empregabilidade</span>
+                            </div>
+                            <span className="text-sm font-semibold text-petroleo">
+                              {city.job_market_score}/10
+                            </span>
+                          </div>
+                        )}
+                        {city.education_score && (
+                          <div className="bg-gray-50 rounded-lg p-2">
+                            <div className="flex items-center space-x-1 mb-1">
+                              <span className="text-xs text-petroleo">🎓</span>
+                              <span className="text-xs font-medium text-gray-700">Ensino</span>
+                            </div>
+                            <span className="text-sm font-semibold text-petroleo">
+                              {city.education_score}/10
+                            </span>
+                          </div>
+                        )}
+                        {city.business_opportunity_score && (
+                          <div className="bg-gray-50 rounded-lg p-2">
+                            <div className="flex items-center space-x-1 mb-1">
+                              <span className="text-xs text-petroleo">💼</span>
+                              <span className="text-xs font-medium text-gray-700">Negócios</span>
+                            </div>
+                            <span className="text-sm font-semibold text-petroleo">
+                              {city.business_opportunity_score}/10
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
                       {/* Highlights */}
                       {city.highlights && city.highlights.length > 0 && (
@@ -322,7 +374,9 @@ const DestinosIndex = () => {
             </>
           )}
         </div>
-      </section>
+      </div>
+      
+      <Footer />
     </div>
   );
 };

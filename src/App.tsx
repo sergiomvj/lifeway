@@ -8,6 +8,9 @@ import Dreams from "./pages/Dreams";
 import VisaMatch from "./pages/VisaMatch";
 import Especialista from "./pages/Especialista";
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import AdminOpenAI from "./pages/AdminOpenAI";
 import FerramentasIndex from "./pages/ferramentas/index";
 import DestinosIndex from "./pages/destinos/index";
 import BlogIndex from "./pages/blog/index";
@@ -30,6 +33,9 @@ const App = () => (
               <Route path="/visamatch" element={<VisaMatch />} />
               <Route path="/especialista" element={<Especialista />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/admin/openai" element={<AdminOpenAI />} />
               <Route path="/ferramentas" element={<FerramentasIndex />} />
               <Route path="/destinos" element={<DestinosIndex />} />
               <Route path="/blog" element={<BlogIndex />} />

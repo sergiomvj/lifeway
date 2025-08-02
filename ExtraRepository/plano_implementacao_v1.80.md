@@ -249,6 +249,422 @@ interface PDFAccessControl {
 - **Tecnologias:** Socket.io, WebSocket
 - **Tempo estimado:** 3 dias
 
+**Arquitetura do Chat:**
+```typescript
+interface ChatArchitecture {
+  // Componentes principais
+  components: {
+    ChatInterface: 'Interface de chat responsiva',
+    MessageHandler: 'Processamento de mensagens',
+    ContextProvider: 'Fornecimento de contexto do usuário',
+    SpecialistQueue: 'Sistema de filas de especialistas'
+  };
+  
+  // Fluxo de dados
+  dataFlow: {
+    userMessage: 'User → WebSocket → Specialist',
+    specialistResponse: 'Specialist → WebSocket → User',
+    contextTransfer: 'UserContext → Specialist Dashboard',
+    sessionPersistence: 'Messages → Database → History'
+  };
+}
+```
+
+**Sistema de Filas:**
+```typescript
+interface QueueSystem {
+  // Estados do especialista
+  specialistStatus: 'available' | 'busy' | 'offline';
+  
+  // Priorização de filas
+  queuePriority: {
+    pro_users: 1,
+    urgent_cases: 2,
+    regular_users: 3
+  };
+  
+  // Métricas de atendimento
+  metrics: {
+    averageWaitTime: number;
+    sessionDuration: number;
+    satisfactionScore: number;
+  };
+}
+```
+
+---
+
+## 🔄 FASE 2: INTEGRAÇÃO E PERSONALIZAÇÃO (1 mês)
+
+### 2.1 Integração Entre Ferramentas
+
+#### 2.1.1 Criar fluxo unificado Sonhos → VisaMatch → Especialista
+- **Descrição:** Jornada contínua do usuário entre ferramentas
+- **Entregáveis:**
+  - Navegação contextual inteligente
+  - Transferência automática de dados
+  - Progress tracking unificado
+  - Onboarding guiado
+- **Tecnologias:** React Router, Context API
+- **Tempo estimado:** 3 dias
+
+**Fluxo de Navegação:**
+```typescript
+interface UnifiedFlow {
+  // Etapas do fluxo
+  steps: [
+    'dreams_completion',
+    'pdf_generation',
+    'visamatch_analysis',
+    'specialist_consultation',
+    'action_plan_creation'
+  ];
+  
+  // Condições de progressão
+  progressionRules: {
+    dreams_to_visamatch: 'dreams_completed && pdf_downloaded',
+    visamatch_to_chat: 'analysis_completed && user_interested',
+    chat_to_plan: 'consultation_completed'
+  };
+  
+  // Pontos de saída
+  exitPoints: {
+    early_exit: 'Save progress and resume later',
+    upgrade_prompt: 'Convert to PRO subscription',
+    completion: 'Full journey completed'
+  };
+}
+```
+
+#### 2.1.2 Implementar compartilhamento de dados entre tools
+- **Descrição:** Sincronização automática de dados do usuário
+- **Entregáveis:**
+  - API de sincronização de dados
+  - Validação de integridade
+  - Conflict resolution
+  - Backup automático
+- **Tecnologias:** Supabase Realtime, JSON Schema
+- **Tempo estimado:** 2 dias
+
+#### 2.1.3 Desenvolver dashboard unificado
+- **Descrição:** Visão consolidada do progresso do usuário
+- **Entregáveis:**
+  - Dashboard principal
+  - Widgets de progresso
+  - Resumo de análises
+  - Próximos passos recomendados
+- **Tecnologias:** React, Chart.js, Tailwind
+- **Tempo estimado:** 3 dias
+
+#### 2.1.4 Criar sistema de navegação contextual
+- **Descrição:** Navegação inteligente baseada no estado do usuário
+- **Entregáveis:**
+  - Menu contextual dinâmico
+  - Breadcrumbs inteligentes
+  - Shortcuts baseados em progresso
+  - Deep linking com estado
+- **Tecnologias:** React Router, URL State Management
+- **Tempo estimado:** 2 dias
+
+#### 2.1.5 🎯 Ponte PDF → Chat Especialista
+- **Descrição:** Integração direta entre PDF e consulta especializada
+- **Entregáveis:**
+  - Botão "Discutir com Especialista" no PDF
+  - Transferência automática de contexto
+  - Pré-preenchimento de tópicos de discussão
+  - Agendamento inteligente
+- **Tecnologias:** PDF.js, Context API, Calendar Integration
+- **Tempo estimado:** 2 dias
+
+### 2.2 Questionário Adaptativo
+
+#### 2.2.1 Implementar lógica de perguntas condicionais
+- **Descrição:** Formulários que se adaptam às respostas do usuário
+- **Entregáveis:**
+  - Engine de regras condicionais
+  - Validação dinâmica
+  - Skip logic inteligente
+  - Personalização baseada em perfil
+- **Tecnologias:** JSON Schema, React Hook Form
+- **Tempo estimado:** 3 dias
+
+**Sistema de Regras:**
+```typescript
+interface AdaptiveQuestionnaire {
+  // Regras condicionais
+  conditionalRules: {
+    showQuestion: (answers: FormData, questionId: string) => boolean;
+    validateAnswer: (answer: any, context: FormData) => ValidationResult;
+    suggestNext: (currentAnswers: FormData) => string[];
+  };
+  
+  // Personalização
+  personalization: {
+    basedOnProfession: (profession: string) => QuestionSet;
+    basedOnFamily: (familySize: number, ages: number[]) => QuestionSet;
+    basedOnGoals: (goals: string[]) => QuestionSet;
+  };
+  
+  // Otimização
+  optimization: {
+    skipIrrelevant: boolean;
+    prioritizeImportant: boolean;
+    adaptToUserPace: boolean;
+  };
+}
+```
+
+#### 2.2.2 Criar sistema de sugestões contextuais
+- **Descrição:** Sugestões inteligentes durante o preenchimento
+- **Entregáveis:**
+  - Auto-complete inteligente
+  - Sugestões baseadas em perfil similar
+  - Dicas contextuais
+  - Validação em tempo real
+- **Tecnologias:** Fuzzy Search, Machine Learning
+- **Tempo estimado:** 2 dias
+
+#### 2.2.3 Desenvolver validação inteligente baseada em perfil
+- **Descrição:** Validação que considera o contexto completo do usuário
+- **Entregáveis:**
+  - Validadores contextuais
+  - Alertas de inconsistência
+  - Sugestões de correção
+  - Score de qualidade dos dados
+- **Tecnologias:** Custom Validators, AI-assisted validation
+- **Tempo estimado:** 2 dias
+
+#### 2.2.4 Adicionar auto-complete e sugestões
+- **Descrição:** Facilitar preenchimento com sugestões inteligentes
+- **Entregáveis:**
+  - Componentes de auto-complete
+  - Base de dados de sugestões
+  - Aprendizado de padrões
+  - Personalização por região
+- **Tecnologias:** Elasticsearch, React Select
+- **Tempo estimado:** 2 dias
+
+### 2.3 Recursos Visuais Avançados
+
+#### 2.3.1 Integrar mapas interativos
+- **Descrição:** Visualização geográfica de oportunidades
+- **Entregáveis:**
+  - Mapas de estados americanos
+  - Indicadores de oportunidades por região
+  - Filtros por critérios
+  - Informações demográficas
+- **Tecnologias:** Leaflet, Google Maps API
+- **Tempo estimado:** 3 dias
+
+#### 2.3.2 Criar calculadora de custo de vida
+- **Descrição:** Comparação de custos entre Brasil e EUA
+- **Entregáveis:**
+  - Calculadora interativa
+  - Dados atualizados de custo de vida
+  - Comparação por cidade
+  - Projeções financeiras
+- **Tecnologias:** APIs de dados econômicos, Chart.js
+- **Tempo estimado:** 2 dias
+
+#### 2.3.3 Implementar gráficos comparativos
+- **Descrição:** Visualização de dados de análise
+- **Entregáveis:**
+  - Gráficos de probabilidade
+  - Comparação de estratégias
+  - Timeline visual
+  - Métricas de progresso
+- **Tecnologias:** D3.js, Chart.js, React Charts
+- **Tempo estimado:** 2 dias
+
+#### 2.3.4 Adicionar galeria de imagens das cidades
+- **Descrição:** Visualização inspiradora de destinos
+- **Entregáveis:**
+  - Galeria responsiva
+  - Filtros por estado/cidade
+  - Informações contextuais
+  - Integração com análise de visto
+- **Tecnologias:** React Image Gallery, Lazy Loading
+- **Tempo estimado:** 1 dia
+
+#### 2.3.5 🎯 Biblioteca de Imagens Familiares
+- **Descrição:** Sistema inteligente de seleção de imagens
+- **Entregáveis:**
+  - Algoritmo de seleção baseado em perfil
+  - Categorização automática
+  - Otimização para PDF e web
+  - Sistema de tags inteligentes
+- **Tecnologias:** Image Processing, AI Classification
+- **Tempo estimado:** 2 dias
+
+**Algoritmo de Seleção:**
+```typescript
+interface ImageSelectionAlgorithm {
+  // Critérios de seleção
+  selectionCriteria: {
+    familySize: number;
+    ageGroups: ('infant' | 'child' | 'teen' | 'adult' | 'senior')[];
+    lifestyle: 'urban' | 'suburban' | 'rural';
+    interests: string[];
+    targetState: string;
+  };
+  
+  // Algoritmo de matching
+  matchingAlgorithm: {
+    demographicMatch: (family: FamilyProfile, image: ImageMetadata) => number;
+    lifestyleMatch: (preferences: Preferences, image: ImageMetadata) => number;
+    geographicMatch: (targetLocation: string, image: ImageMetadata) => number;
+    emotionalResonance: (goals: Goals, image: ImageMetadata) => number;
+  };
+  
+  // Otimização
+  optimization: {
+    diversityScore: number; // Evitar imagens muito similares
+    qualityThreshold: number; // Apenas imagens de alta qualidade
+    relevanceWeight: number; // Peso da relevância vs diversidade
+  };
+}
+```
+
+---
+
+## 🚀 FASE 3: AUTOMAÇÃO E GAMIFICAÇÃO (2 meses)
+
+### 3.1 Sistema de Follow-up
+
+#### 3.1.1 Implementar notificações push/email
+- **Descrição:** Sistema automatizado de comunicação
+- **Entregáveis:**
+  - Templates de email personalizados
+  - Push notifications web
+  - Segmentação de usuários
+  - A/B testing de mensagens
+- **Tecnologias:** SendGrid, Web Push API
+- **Tempo estimado:** 3 dias
+
+#### 3.1.2 Criar sistema de lembretes baseados em timeline
+- **Descrição:** Lembretes inteligentes baseados no progresso
+- **Entregáveis:**
+  - Engine de lembretes contextuais
+  - Calendário de marcos importantes
+  - Alertas de prazo
+  - Sugestões de próximos passos
+- **Tecnologias:** Cron Jobs, Calendar API
+- **Tempo estimado:** 2 dias
+
+#### 3.1.3 Desenvolver alertas de mudanças legais
+- **Descrição:** Monitoramento de mudanças na legislação
+- **Entregáveis:**
+  - Sistema de monitoramento de fontes oficiais
+  - Alertas personalizados por tipo de visto
+  - Análise de impacto
+  - Recomendações de ação
+- **Tecnologias:** Web Scraping, RSS Feeds, AI Analysis
+- **Tempo estimado:** 4 dias
+
+#### 3.1.4 Implementar tracking de progresso
+- **Descrição:** Acompanhamento detalhado do progresso do usuário
+- **Entregáveis:**
+  - Dashboard de progresso
+  - Métricas de avanço
+  - Identificação de bloqueios
+  - Sugestões de aceleração
+- **Tecnologias:** Analytics, Progress Tracking
+- **Tempo estimado:** 2 dias
+
+#### 3.1.5 🎯 Follow-up Pós-Consulta Especialista
+- **Descrição:** Acompanhamento após sessões com especialista
+- **Entregáveis:**
+  - Resumos automáticos das conversas
+  - Planos de ação personalizados
+  - Agendamento de follow-ups
+  - Tracking de implementação
+- **Tecnologias:** AI Summarization, Task Management
+- **Tempo estimado:** 3 dias
+
+### 3.2 Gamificação
+
+#### 3.2.1 Sistema de pontos e conquistas
+- **Descrição:** Gamificação da jornada de imigração
+- **Entregáveis:**
+  - Sistema de pontos por ações
+  - Badges e conquistas
+  - Leaderboard (opcional)
+  - Recompensas por marcos
+- **Tecnologias:** Gamification Engine, React Animations
+- **Tempo estimado:** 3 dias
+
+#### 3.2.2 Progress tracking visual
+- **Descrição:** Visualização gamificada do progresso
+- **Entregáveis:**
+  - Barra de progresso animada
+  - Milestones visuais
+  - Celebrações de conquistas
+  - Comparação com outros usuários
+- **Tecnologias:** CSS Animations, Progress Bars
+- **Tempo estimado:** 2 dias
+
+#### 3.2.3 Histórias de sucesso similares
+- **Descrição:** Inspiração através de casos de sucesso
+- **Entregáveis:**
+  - Base de histórias de sucesso
+  - Matching por perfil similar
+  - Depoimentos em vídeo
+  - Timeline de sucesso
+- **Tecnologias:** Content Management, Video Player
+- **Tempo estimado:** 2 dias
+
+#### 3.2.4 Comunidade e social proof
+- **Descrição:** Elementos sociais para engajamento
+- **Entregáveis:**
+  - Fórum de discussão
+  - Grupos por interesse
+  - Mentorship program
+  - Testimonials dinâmicos
+- **Tecnologias:** Community Platform, Social Features
+- **Tempo estimado:** 4 dias
+
+### 3.3 Integrações Externas
+
+#### 3.3.1 APIs de dados econômicos em tempo real
+- **Descrição:** Dados atualizados sobre economia e mercado
+- **Entregáveis:**
+  - Integração com APIs financeiras
+  - Dados de mercado de trabalho
+  - Indicadores econômicos
+  - Alertas de mudanças significativas
+- **Tecnologias:** Financial APIs, Real-time Data
+- **Tempo estimado:** 3 dias
+
+#### 3.3.2 Integração com calendários
+- **Descrição:** Sincronização com calendários pessoais
+- **Entregáveis:**
+  - Integração Google Calendar
+  - Integração Outlook
+  - Lembretes automáticos
+  - Agendamento de consultas
+- **Tecnologias:** Calendar APIs, iCal
+- **Tempo estimado:** 2 dias
+
+#### 3.3.3 Sistema de CRM para leads
+- **Descrição:** Gestão de relacionamento com clientes
+- **Entregáveis:**
+  - Pipeline de conversão
+  - Scoring de leads
+  - Automação de marketing
+  - Análise de comportamento
+- **Tecnologias:** CRM Integration, Marketing Automation
+- **Tempo estimado:** 4 dias
+
+#### 3.3.4 Analytics avançados e métricas
+- **Descrição:** Análise profunda de uso e performance
+- **Entregáveis:**
+  - Dashboard de analytics
+  - Métricas de negócio
+  - Análise de comportamento
+  - Relatórios automatizados
+- **Tecnologias:** Google Analytics, Custom Analytics
+- **Tempo estimado:** 3 dias
+
 ---
 
 ## 🔗 FASE 2: INTEGRAÇÃO E PERSONALIZAÇÃO
