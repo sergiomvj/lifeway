@@ -1,10 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from '@/components/Navbar';
@@ -18,7 +18,11 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  // Get the redirect path from location state or default to home
+  const from = location.state?.from?.pathname || '/';
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +43,8 @@ const Login = () => {
           description: "Bem-vindo de volta ao LifeWayUSA.",
         });
 
-        navigate('/');
+        // Redirect to the page the user was trying to access, or home if none
+        navigate(from);
       } else {
         // Cadastro
         if (password !== confirmPassword) {
@@ -74,7 +79,7 @@ const Login = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: `${window.location.origin}${from}`
         }
       });
 
@@ -91,6 +96,18 @@ const Login = () => {
   const handleGuestAccess = () => {
     navigate('/');
   };
+
+  // If user is already logged in, redirect them
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        navigate(from);
+      }
+    };
+    
+    checkAuth();
+  }, [navigate, from]);
 
   return (
     <div className="min-h-screen bg-background">

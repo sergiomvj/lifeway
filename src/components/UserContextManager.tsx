@@ -128,8 +128,8 @@ export function UserContextManager({
       <Card>
         <CardContent className="p-6">
           <div className="text-center">
-            <User className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">Contexto não encontrado</h3>
+            <User className="h-12 w-12 mx-auto mb-4 text-blue-500" />
+            <h3 className="text-lg font-semibold mb-2">Bem-vindo à Lifeway USA</h3>
             <p className="text-muted-foreground mb-4">
               Vamos criar seu perfil personalizado para melhor atendimento.
             </p>

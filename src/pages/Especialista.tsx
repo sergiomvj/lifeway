@@ -224,7 +224,7 @@ const Especialista = () => {
 
           {/* Área do chat - Ajustada para nova proporção */}
           <div className="lg:col-span-2">
-            <Card className="h-[500px] flex flex-col">
+            <Card className="h-[600px] flex flex-col">
               <CardHeader className="flex-shrink-0">
                 <div className="flex items-center space-x-2">
                   <Bot className="w-6 h-6 text-blue-500" />
@@ -235,8 +235,8 @@ const Especialista = () => {
                 </div>
               </CardHeader>
               
-              <CardContent className="flex-1 flex flex-col p-0">
-                <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+              <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+                <ScrollArea className="flex-1 p-4 h-full" ref={scrollAreaRef}>
                   <div className="space-y-4">
                     {messages.map((message) => (
                       <div

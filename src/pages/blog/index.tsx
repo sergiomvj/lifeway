@@ -124,19 +124,11 @@ const BlogPage = () => {
             <Card key={post.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
               <Link to={`/blog/${post.slug}`} className="block">
                 <div className="relative">
-                  {post.image_url ? (
-                    <img 
-                      src={post.image_url} 
-                      alt={post.title}
-                      className="w-full h-48 object-cover rounded-t-lg"
-                    />
-                  ) : (
-                    <div className="w-full h-48 bg-gradient-to-br from-lilas to-secondary rounded-t-lg flex items-center justify-center">
-                      <div className="text-petroleo text-4xl font-baskerville font-bold">
-                        {post.title.charAt(0)}
-                      </div>
+                  <div className="w-full h-24 bg-gradient-to-br from-lilas to-secondary rounded-t-lg flex items-center justify-center">
+                    <div className="text-petroleo text-4xl font-baskerville font-bold">
+                      {post.title.charAt(0)}
                     </div>
-                  )}
+                  </div>
                   
                   {post.category && (
                     <div className="absolute top-4 right-4">

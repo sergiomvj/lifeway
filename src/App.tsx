@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Dreams from "./pages/Dreams";
 import VisaMatch from "./pages/VisaMatch";
@@ -33,9 +34,9 @@ const App = () => (
               <Route path="/visamatch" element={<VisaMatch />} />
               <Route path="/especialista" element={<Especialista />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/admin/openai" element={<AdminOpenAI />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/admin/openai" element={<ProtectedRoute><AdminOpenAI /></ProtectedRoute>} />
               <Route path="/ferramentas" element={<FerramentasIndex />} />
               <Route path="/destinos" element={<DestinosIndex />} />
               <Route path="/blog" element={<BlogIndex />} />

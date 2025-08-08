@@ -186,8 +186,8 @@ const ContatoPage = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">E-mail</h3>
-                      <p className="text-gray-600">contato@lifewayusa.com</p>
-                      <p className="text-gray-600">suporte@lifewayusa.com</p>
+                      <p className="text-gray-600">contato@lifewayusa.app</p>
+                      <p className="text-gray-600">suporte@lifewayusa.app</p>
                     </div>
                   </div>
 
@@ -197,7 +197,7 @@ const ContatoPage = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">Telefone</h3>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
+                      <p className="text-gray-600">+1 (407) 334-2571</p>
                       <p className="text-gray-600">+55 (11) 99999-9999</p>
                     </div>
                   </div>

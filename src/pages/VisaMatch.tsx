@@ -42,7 +42,7 @@ const VisaMatch = () => {
         { value: 'study', label: 'Estudar' },
         { value: 'invest', label: 'Investir/Empreender' },
         { value: 'family', label: 'Reunificação Familiar' },
-        { value: 'visit', label: 'Visitar/Turismo' }
+        { value: 'visit', label: 'Viver com tranquilidade' }
       ]
     },
     {
