@@ -28,7 +28,11 @@ const FieldWrapper: React.FC<{
 }> = ({ field, label, required, children, getFieldState, getValidationSuggestions, formData }) => {
   const fieldState = getFieldState(field);
   const suggestions = getValidationSuggestions(field);
-  const customSuggestions = getFieldSuggestions(field, formData[field] || '');
+  // Ensure we pass a string to getFieldSuggestions
+  const fieldValue = typeof formData[field] === 'string' 
+    ? formData[field] as string 
+    : '';
+  const customSuggestions = getFieldSuggestions(field, fieldValue);
 
   return (
     <div className="space-y-2">

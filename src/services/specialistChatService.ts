@@ -266,7 +266,18 @@ class SpecialistChatService {
         .order('rating', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Map the data to match the SpecialistAvailability interface
+      return (data || []).map(specialist => ({
+        specialist_id: specialist.id,
+        name: specialist.name,
+        specialties: specialist.specialties,
+        status: specialist.status,
+        current_queue_size: specialist.current_queue_size,
+        average_response_time: specialist.average_response_time,
+        rating: specialist.rating,
+        languages: specialist.languages
+      }));
     } catch (error) {
       console.error('Erro ao buscar especialistas:', error);
       return [];

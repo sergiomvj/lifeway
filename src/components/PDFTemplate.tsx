@@ -266,7 +266,7 @@ const PDFTemplate: React.FC<PDFTemplateProps> = ({
   };
 
   const analysisData = processAIAnalysis(aiAnalysis);
-  const familyName = formData.nome_familia || userProfile.name || 'Família';
+  const familyName = formData.nome || userProfile.name || 'Família';
   const mainImage = selectedImages[0] || '/images/family/default-family.jpg';
 
   return (
@@ -378,7 +378,7 @@ const PDFTemplate: React.FC<PDFTemplateProps> = ({
             </View>
             <View style={[styles.row, { marginBottom: 8 }]}>
               <Text style={styles.textBold}>Prazo Desejado:</Text>
-              <Text>{formData.prazo_desejado || 'Não informado'}</Text>
+              <Text>{formData.timeline || 'Não informado'}</Text>
             </View>
           </View>
         </View>

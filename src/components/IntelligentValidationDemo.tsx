@@ -142,12 +142,12 @@ export function IntelligentValidationDemo({ className }: IntelligentValidationDe
                   result.severity === 'error' && !result.is_valid && 'border-red-200 bg-red-50',
                   result.severity === 'warning' && 'border-yellow-200 bg-yellow-50',
                   result.severity === 'success' && result.is_valid && 'border-green-200 bg-green-50',
-                  result.severity === 'info' && 'border-blue-200 bg-blue-50'
+                  result.severity === 'suggestion' && 'border-blue-200 bg-blue-50'
                 )}
               >
                 {result.severity === 'error' && !result.is_valid && <AlertCircle className="h-4 w-4 text-red-600" />}
                 {result.severity === 'success' && result.is_valid && <CheckCircle className="h-4 w-4 text-green-600" />}
-                {result.severity === 'info' && <Shield className="h-4 w-4 text-blue-600" />}
+                {result.severity === 'suggestion' && <Shield className="h-4 w-4 text-blue-600" />}
                 
                 <AlertDescription>
                   <div className="flex items-start justify-between">

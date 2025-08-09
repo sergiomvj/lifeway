@@ -183,8 +183,16 @@ export function useDataSync(options: UseDataSyncOptions = {}): UseDataSyncReturn
       
       // Processar resultados e conflitos
       const allConflicts = Object.values(results)
-        .filter(result => result && result.conflicts)
-        .flatMap(result => result.conflicts);
+        .filter(result => {
+          return result && 
+                 typeof result === 'object' && 
+                 'conflicts' in result && 
+                 Array.isArray(result.conflicts);
+        })
+        .flatMap(result => {
+          // TypeScript agora sabe que result tem a propriedade conflicts e é um array
+          return (result as {conflicts: any[]}).conflicts;
+        });
       
       setConflicts(allConflicts);
       
@@ -212,21 +220,21 @@ export function useDataSync(options: UseDataSyncOptions = {}): UseDataSyncReturn
     if (!autoSync || !userContext?.user_id) return;
 
     // Configurar listeners para mudanças nos dados das ferramentas
-    const handleDataChange = async (toolName: string, data: any) => {
+    const handleDataChange = async (toolName: string, data: unknown) => {
       try {
         switch (toolName) {
           case 'dreams':
-            if (data.is_completed) {
+            if (data && typeof data === 'object' && 'is_completed' in data && data.is_completed) {
               await syncDreamsMutation.mutateAsync(data);
             }
             break;
           case 'visamatch':
-            if (data.analysis_completed) {
+            if (data && typeof data === 'object' && 'analysis_completed' in data && data.analysis_completed) {
               await syncVisaMatchMutation.mutateAsync(data);
             }
             break;
           case 'specialist':
-            if (data.session_completed) {
+            if (data && typeof data === 'object' && 'session_completed' in data && data.session_completed) {
               await syncSpecialistMutation.mutateAsync(data);
             }
             break;
@@ -250,8 +258,8 @@ export function useDataSync(options: UseDataSyncOptions = {}): UseDataSyncReturn
           const status = await dataSyncService.getSyncStatus(userContext.user_id);
           
           // Se não houve sincronização recente, fazer sync forçado
-          if (!status.last_sync || 
-              (new Date().getTime() - new Date(status.last_sync).getTime()) > 24 * 60 * 60 * 1000) {
+          if (status && (!status.last_sync || 
+              (new Date().getTime() - new Date(status.last_sync).getTime()) > 24 * 60 * 60 * 1000)) {
             await forceSyncMutation.mutateAsync();
           }
         } catch (error) {
@@ -265,7 +273,7 @@ export function useDataSync(options: UseDataSyncOptions = {}): UseDataSyncReturn
 
   // Monitorar conflitos e notificar usuário
   useEffect(() => {
-    if (syncStatus?.pending_conflicts > 0) {
+    if (syncStatus && typeof syncStatus === 'object' && 'pending_conflicts' in syncStatus && syncStatus.pending_conflicts > 0) {
       // Implementar notificação de conflitos pendentes
       console.warn(`${syncStatus.pending_conflicts} conflitos de sincronização pendentes`);
     }

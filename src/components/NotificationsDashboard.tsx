@@ -58,6 +58,32 @@ const NotificationsDashboard: React.FC<NotificationsDashboardProps> = ({
 
   const notificationStats = getNotificationStats();
   const recentNotifications = getRecentNotifications(5);
+  
+  // Create wrapper functions for event handlers
+  const handleRequestPermission = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    requestPermission();
+  };
+  
+  const handleMarkAllAsRead = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    markAllAsRead();
+  };
+  
+  const handleSendTestNotification = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    sendTestNotification();
+  };
+  
+  const handleMarkAsRead = (notificationId: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    markAsRead(notificationId);
+  };
+  
+  const handleDeleteNotification = (notificationId: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    deleteNotification(notificationId);
+  };
   const systemStatus = getNotificationSystemStatus();
 
   const getNotificationIcon = (type: PushNotification['type']) => {
@@ -116,7 +142,7 @@ const NotificationsDashboard: React.FC<NotificationsDashboardProps> = ({
                   size="sm" 
                   variant="outline" 
                   className="mt-2 h-6 text-xs"
-                  onClick={requestPermission}
+                  onClick={handleRequestPermission}
                   disabled={isRequestingPermission}
                 >
                   {systemStatus.action}
@@ -288,7 +314,7 @@ const NotificationsDashboard: React.FC<NotificationsDashboardProps> = ({
                     variant="outline" 
                     size="sm" 
                     className="w-full"
-                    onClick={sendTestNotification}
+                    onClick={handleSendTestNotification}
                   >
                     Enviar Notificação de Teste
                   </Button>
@@ -323,7 +349,7 @@ const NotificationsDashboard: React.FC<NotificationsDashboardProps> = ({
           {unreadNotifications.length > 0 && (
             <Button 
               variant="outline" 
-              onClick={markAllAsRead}
+              onClick={handleMarkAllAsRead}
             >
               <Check className="h-4 w-4 mr-2" />
               Marcar Todas como Lidas
@@ -331,7 +357,7 @@ const NotificationsDashboard: React.FC<NotificationsDashboardProps> = ({
           )}
           <Button 
             variant="outline"
-            onClick={sendTestNotification}
+            onClick={handleSendTestNotification}
           >
             <Bell className="h-4 w-4 mr-2" />
             Teste
@@ -353,7 +379,7 @@ const NotificationsDashboard: React.FC<NotificationsDashboardProps> = ({
               </div>
               {systemStatus.action && (
                 <Button 
-                  onClick={requestPermission}
+                  onClick={handleRequestPermission}
                   disabled={isRequestingPermission}
                 >
                   {systemStatus.action}

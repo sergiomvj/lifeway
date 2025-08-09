@@ -1,12 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { pdf } from '@react-pdf/renderer';
+import { pdf, Document, Page } from '@react-pdf/renderer';
 import { supabase } from '@/lib/supabaseClient';
 import { useUserContext } from '@/hooks/useUserContext';
 import { CriadorSonhosFormData } from '@/types/forms';
 import { useNotifications } from '@/hooks/useNotifications';
 import PDFTemplate from '@/components/PDFTemplate';
+import { UserProfile } from '@/types/userContext';
 
 interface PDFAccessControl {
   launchDate: Date;
@@ -40,7 +41,7 @@ interface FamilyImage {
 }
 
 export const usePDFGenerationEnhanced = () => {
-  const { context: user } = useUserContext();
+  const { userContext: user } = useUserContext();
   const queryClient = useQueryClient();
   const { notifyAchievementUnlocked } = useNotifications();
   
@@ -225,16 +226,38 @@ export const usePDFGenerationEnhanced = () => {
 
         // Gerar PDF
         setGenerationProgress(40);
-        const pdfBlob = await pdf(
-          React.createElement(PDFTemplate, {
-            formData,
-            aiAnalysis,
-            userProfile: user,
-            selectedImages,
-            template: finalTemplate,
-            watermark
-          })
-        ).toBlob();
+        
+        // Extrair apenas os campos necessários do perfil do usuário para o PDFTemplate
+        const userProfileForPDF: UserProfile = {
+          id: user.user_id,
+          name: user.profile?.name || 'Usuário',
+          profession: user.profile?.profession || 'Não informado',
+          education_level: user.profile?.education_level || 'other',
+          english_level: user.profile?.english_level || 'basic',
+          current_country: user.profile?.current_country || 'Brasil',
+          created_at: user.profile?.created_at || new Date().toISOString(),
+          updated_at: user.profile?.updated_at || new Date().toISOString()
+        };
+        
+        // Criar um wrapper Document para o PDFTemplate
+        // Isso resolve a incompatibilidade de tipos com a função pdf()
+        const PDFDocumentWrapper = () => {
+          return React.createElement(
+            Document,
+            {},
+            React.createElement(PDFTemplate, {
+              formData,
+              aiAnalysis,
+              userProfile: userProfileForPDF,
+              selectedImages,
+              template: finalTemplate,
+              watermark
+            })
+          );
+        };
+        
+        // Gerar o blob do PDF usando o wrapper
+        const pdfBlob = await pdf(React.createElement(PDFDocumentWrapper, {})).toBlob();
 
         setGenerationProgress(70);
 

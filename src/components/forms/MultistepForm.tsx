@@ -51,7 +51,7 @@ export function MultistepForm<T extends Record<string, any>>({
   className,
   title,
   description,
-  validationRules = {},
+  validationRules = {} as Record<keyof T, ValidationRule[]>,
   autoSaveConfig = {
     enabled: true,
     interval: 30000, // 30 seconds

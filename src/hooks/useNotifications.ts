@@ -23,10 +23,10 @@ export const useNotifications = () => {
     error: settingsError,
     refetch: refetchSettings
   } = useQuery({
-    queryKey: ['notification-settings', user?.id],
-    queryFn: () => user?.id ? notificationsService.getUserNotificationSettings(user.id) : null,
+    queryKey: ['notification-settings', user?.user_id],
+    queryFn: () => user?.user_id ? notificationsService.getUserNotificationSettings(user.user_id) : null,
     staleTime: 10 * 60 * 1000, // 10 minutos
-    enabled: !!user?.id
+    enabled: !!user?.user_id
   });
 
   // Query para notificações do usuário
@@ -36,11 +36,11 @@ export const useNotifications = () => {
     error: notificationsError,
     refetch: refetchNotifications
   } = useQuery({
-    queryKey: ['notifications', user?.id],
-    queryFn: () => user?.id ? notificationsService.getUserNotifications(user.id, 50) : [],
+    queryKey: ['notifications', user?.user_id],
+    queryFn: () => user?.user_id ? notificationsService.getUserNotifications(user.user_id, 50) : [],
     staleTime: 2 * 60 * 1000, // 2 minutos
     refetchInterval: 5 * 60 * 1000, // Refetch a cada 5 minutos
-    enabled: !!user?.id
+    enabled: !!user?.user_id
   });
 
   // Query para notificações não lidas
@@ -49,11 +49,11 @@ export const useNotifications = () => {
     isLoading: isLoadingUnread,
     refetch: refetchUnread
   } = useQuery({
-    queryKey: ['notifications', 'unread', user?.id],
-    queryFn: () => user?.id ? notificationsService.getUserNotifications(user.id, 20, true) : [],
+    queryKey: ['notifications', 'unread', user?.user_id],
+    queryFn: () => user?.user_id ? notificationsService.getUserNotifications(user.user_id, 20, true) : [],
     staleTime: 1 * 60 * 1000, // 1 minuto
     refetchInterval: 2 * 60 * 1000, // Refetch a cada 2 minutos
-    enabled: !!user?.id
+    enabled: !!user?.user_id
   });
 
   // Mutation para solicitar permissão
@@ -84,13 +84,13 @@ export const useNotifications = () => {
   // Mutation para atualizar configurações
   const updateSettingsMutation = useMutation({
     mutationFn: (settings: Partial<Omit<NotificationSettings, 'userId'>>) => {
-      if (!user?.id) throw new Error('Usuário não autenticado');
-      return notificationsService.updateNotificationSettings(user.id, settings);
+      if (!user?.user_id) throw new Error('Usuário não autenticado');
+      return notificationsService.updateNotificationSettings(user.user_id, settings);
     },
     onSuccess: (success) => {
       if (success) {
         toast.success('Configurações atualizadas!');
-        queryClient.invalidateQueries({ queryKey: ['notification-settings', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['notification-settings', user?.user_id] });
       } else {
         toast.error('Erro ao atualizar configurações');
       }
@@ -107,13 +107,13 @@ export const useNotifications = () => {
     onSuccess: (success, notificationId) => {
       if (success) {
         // Atualizar cache local
-        queryClient.setQueryData(['notifications', user?.id], (old: PushNotification[] = []) =>
+        queryClient.setQueryData(['notifications', user?.user_id], (old: PushNotification[] = []) =>
           old.map(notif => 
             notif.id === notificationId ? { ...notif, isRead: true } : notif
           )
         );
         
-        queryClient.setQueryData(['notifications', 'unread', user?.id], (old: PushNotification[] = []) =>
+        queryClient.setQueryData(['notifications', 'unread', user?.user_id], (old: PushNotification[] = []) =>
           old.filter(notif => notif.id !== notificationId)
         );
       }
@@ -126,17 +126,17 @@ export const useNotifications = () => {
   // Mutation para marcar todas como lidas
   const markAllAsReadMutation = useMutation({
     mutationFn: () => {
-      if (!user?.id) throw new Error('Usuário não autenticado');
-      return notificationsService.markAllAsRead(user.id);
+      if (!user?.user_id) throw new Error('Usuário não autenticado');
+      return notificationsService.markAllAsRead(user.user_id);
     },
     onSuccess: (success) => {
       if (success) {
         // Atualizar cache local
-        queryClient.setQueryData(['notifications', user?.id], (old: PushNotification[] = []) =>
+        queryClient.setQueryData(['notifications', user?.user_id], (old: PushNotification[] = []) =>
           old.map(notif => ({ ...notif, isRead: true }))
         );
         
-        queryClient.setQueryData(['notifications', 'unread', user?.id], () => []);
+        queryClient.setQueryData(['notifications', 'unread', user?.user_id], () => []);
         
         toast.success('Todas as notificações foram marcadas como lidas');
       }
@@ -153,11 +153,11 @@ export const useNotifications = () => {
     onSuccess: (success, notificationId) => {
       if (success) {
         // Remover do cache local
-        queryClient.setQueryData(['notifications', user?.id], (old: PushNotification[] = []) =>
+        queryClient.setQueryData(['notifications', user?.user_id], (old: PushNotification[] = []) =>
           old.filter(notif => notif.id !== notificationId)
         );
         
-        queryClient.setQueryData(['notifications', 'unread', user?.id], (old: PushNotification[] = []) =>
+        queryClient.setQueryData(['notifications', 'unread', user?.user_id], (old: PushNotification[] = []) =>
           old.filter(notif => notif.id !== notificationId)
         );
         
@@ -173,8 +173,8 @@ export const useNotifications = () => {
   // Mutation para enviar notificação de teste
   const sendTestNotificationMutation = useMutation({
     mutationFn: () => {
-      if (!user?.id) throw new Error('Usuário não autenticado');
-      return notificationsService.sendPushNotification(user.id, {
+      if (!user?.user_id) throw new Error('Usuário não autenticado');
+      return notificationsService.sendPushNotification(user.user_id, {
         type: 'reminder',
         title: '🧪 Notificação de Teste',
         message: 'Esta é uma notificação de teste do sistema LifeWay!',
@@ -182,7 +182,9 @@ export const useNotifications = () => {
         category: 'test',
         icon: 'Bell',
         actionUrl: '/dashboard',
-        actionText: 'Ver Dashboard'
+        actionText: 'Ver Dashboard',
+        isRead: false,
+        isSent: false
       });
     },
     onSuccess: (success) => {
@@ -263,23 +265,23 @@ export const useNotifications = () => {
 
   // Métodos de conveniência para notificações específicas
   const notifyAchievementUnlocked = async (achievementName: string, category: string) => {
-    if (!user?.id) return false;
-    return await notificationsService.notifyAchievementUnlocked(user.id, achievementName, category);
+    if (!user?.user_id) return false;
+    return await notificationsService.notifyAchievementUnlocked(user.user_id, achievementName, category);
   };
 
   const notifyRewardUnlocked = async (rewardName: string, level: number) => {
-    if (!user?.id) return false;
-    return await notificationsService.notifyRewardUnlocked(user.id, rewardName, level);
+    if (!user?.user_id) return false;
+    return await notificationsService.notifyRewardUnlocked(user.user_id, rewardName, level);
   };
 
   const notifyRankingChange = async (newRank: number, oldRank: number, category: string) => {
-    if (!user?.id) return false;
-    return await notificationsService.notifyRankingChange(user.id, newRank, oldRank, category);
+    if (!user?.user_id) return false;
+    return await notificationsService.notifyRankingChange(user.user_id, newRank, oldRank, category);
   };
 
   const notifyLevelUp = async (newLevel: number) => {
-    if (!user?.id) return false;
-    return await notificationsService.notifyLevelUp(user.id, newLevel);
+    if (!user?.user_id) return false;
+    return await notificationsService.notifyLevelUp(user.user_id, newLevel);
   };
 
   // Verificar se notificações estão configuradas corretamente

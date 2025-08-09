@@ -190,7 +190,11 @@ export function useAdaptiveQuestionnaire(
       }
 
       // Validar todas as respostas obrigatórias
-      const requiredQuestions = questions.filter(q => q.required);
+      if (!questionnaireData?.questions) {
+        throw new Error('Dados do questionário não disponíveis');
+      }
+      
+      const requiredQuestions = questionnaireData.questions.filter(q => q.required);
       const missingAnswers = requiredQuestions.filter(q => !currentAnswers[q.id]);
       
       if (missingAnswers.length > 0) {
@@ -318,21 +322,27 @@ export function useAdaptiveQuestionnaire(
   }, [userContext?.user_id, flowId]);
 
   const goToQuestion = useCallback((questionId: string) => {
-    const index = questions.findIndex(q => q.id === questionId);
+    if (!questionnaireData?.questions) return;
+    
+    const index = questionnaireData.questions.findIndex(q => q.id === questionId);
     if (index !== -1) {
       setCurrentQuestionIndex(index);
     }
-  }, [questions]);
+  }, [questionnaireData?.questions]);
 
   const getNextQuestion = useCallback((): QuestionDefinition | null => {
-    const unansweredQuestions = questions.filter(q => !currentAnswers[q.id]);
+    if (!questionnaireData?.questions) return null;
+    
+    const unansweredQuestions = questionnaireData.questions.filter(q => !currentAnswers[q.id]);
     return unansweredQuestions[0] || null;
-  }, [questions, currentAnswers]);
+  }, [questionnaireData?.questions, currentAnswers]);
 
   const getPreviousQuestion = useCallback((): QuestionDefinition | null => {
-    const answeredQuestions = questions.filter(q => currentAnswers[q.id] !== undefined);
+    if (!questionnaireData?.questions) return null;
+    
+    const answeredQuestions = questionnaireData.questions.filter(q => currentAnswers[q.id] !== undefined);
     return answeredQuestions[answeredQuestions.length - 1] || null;
-  }, [questions, currentAnswers]);
+  }, [questionnaireData?.questions, currentAnswers]);
 
   const isQuestionValid = useCallback((questionId: string): boolean => {
     const result = validationResults[questionId];
@@ -374,9 +384,11 @@ export function useAdaptiveQuestionnaire(
   }, [validationResults]);
 
   const isQuestionnaireComplete = useMemo(() => {
-    const requiredQuestions = questions.filter(q => q.required);
+    if (!questionnaireData?.questions) return false;
+    
+    const requiredQuestions = questionnaireData.questions.filter(q => q.required);
     return requiredQuestions.every(q => currentAnswers[q.id] !== undefined);
-  }, [questions, currentAnswers]);
+  }, [questionnaireData?.questions, currentAnswers]);
 
   const canSubmit = useMemo(() => {
     return isQuestionnaireComplete && 

@@ -38,10 +38,10 @@ export const useRankings = () => {
     isLoading: isLoadingPosition,
     refetch: refetchPosition
   } = useQuery({
-    queryKey: ['rankings', 'user-position', user?.id],
-    queryFn: () => user?.id ? rankingsService.getUserRankPosition(user.id) : null,
+    queryKey: ['rankings', 'user-position', user?.user_id],
+    queryFn: () => user?.user_id ? rankingsService.getUserRankPosition(user.user_id) : null,
     staleTime: 2 * 60 * 1000, // 2 minutos
-    enabled: !!user?.id
+    enabled: !!user?.user_id
   });
 
   // Query para competições ativas
@@ -63,10 +63,10 @@ export const useRankings = () => {
     isLoading: isLoadingUserCompetitions,
     refetch: refetchUserCompetitions
   } = useQuery({
-    queryKey: ['competitions', 'user', user?.id],
-    queryFn: () => user?.id ? rankingsService.getUserCompetitions(user.id) : { active: [], completed: [], upcoming: [] },
+    queryKey: ['competitions', 'user', user?.user_id],
+    queryFn: () => user?.user_id ? rankingsService.getUserCompetitions(user.user_id) : { active: [], completed: [], upcoming: [] },
     staleTime: 5 * 60 * 1000,
-    enabled: !!user?.id
+    enabled: !!user?.user_id
   });
 
   // Query para participantes de uma competição
@@ -94,8 +94,8 @@ export const useRankings = () => {
   // Mutation para participar de competição
   const joinCompetitionMutation = useMutation({
     mutationFn: ({ competitionId }: { competitionId: string }) => {
-      if (!user?.id) throw new Error('Usuário não autenticado');
-      return rankingsService.joinCompetition(user.id, competitionId);
+      if (!user?.user_id) throw new Error('Usuário não autenticado');
+      return rankingsService.joinCompetition(user.user_id, competitionId);
     },
     onSuccess: (success, { competitionId }) => {
       if (success) {
@@ -105,7 +105,7 @@ export const useRankings = () => {
         
         // Invalidar queries relacionadas
         queryClient.invalidateQueries({ queryKey: ['competitions', 'active'] });
-        queryClient.invalidateQueries({ queryKey: ['competitions', 'user', user?.id] });
+        queryClient.invalidateQueries({ queryKey: ['competitions', 'user', user?.user_id] });
         queryClient.invalidateQueries({ queryKey: ['competitions', 'participants', competitionId] });
       } else {
         toast.error('Não foi possível entrar na competição', {
@@ -130,8 +130,8 @@ export const useRankings = () => {
       competitionId: string; 
       newScore: number; 
     }) => {
-      if (!user?.id) throw new Error('Usuário não autenticado');
-      return rankingsService.updateParticipantScore(user.id, competitionId, newScore);
+      if (!user?.user_id) throw new Error('Usuário não autenticado');
+      return rankingsService.updateParticipantScore(user.user_id, competitionId, newScore);
     },
     onSuccess: (success, { competitionId }) => {
       if (success) {
@@ -147,9 +147,9 @@ export const useRankings = () => {
 
   // Mutation para criar competição personalizada
   const createCompetitionMutation = useMutation({
-    mutationFn: (competition: Omit<Competition, 'id' | 'currentParticipants' | 'createdBy'>) => {
-      if (!user?.id) throw new Error('Usuário não autenticado');
-      return rankingsService.createCustomCompetition(competition, user.id);
+    mutationFn: (competition: Omit<Competition, 'id' | 'currentParticipants'>) => {
+      if (!user?.user_id) throw new Error('Usuário não autenticado');
+      return rankingsService.createCustomCompetition(competition, user.user_id);
     },
     onSuccess: (competitionId) => {
       if (competitionId) {
@@ -175,8 +175,8 @@ export const useRankings = () => {
 
   // Função para obter posição do usuário em categoria específica
   const getUserCategoryPosition = async (category: Competition['category']) => {
-    if (!user?.id) return null;
-    return await rankingsService.getUserRankPosition(user.id, category);
+    if (!user?.user_id) return null;
+    return await rankingsService.getUserRankPosition(user.user_id, category);
   };
 
   // Função para refresh geral
@@ -236,7 +236,8 @@ export const useRankings = () => {
   };
 
   const getRecommendedCompetitions = () => {
-    const userLevel = user?.level || 1;
+    // Safely access user level with a default of 1 if not available
+    const userLevel = user?.profile?.experience_years ? Math.min(Math.floor(user.profile.experience_years / 2), 5) : 1;
     const activeComps = getActiveCompetitionsForUser();
     
     return activeComps.filter(comp => {

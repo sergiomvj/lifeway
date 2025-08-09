@@ -51,10 +51,8 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
-      }}
+      // Removed custom components to fix TypeScript errors
+      // Will use default navigation buttons from react-day-picker
       {...props}
     />
   );

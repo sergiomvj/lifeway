@@ -39,6 +39,17 @@ import { useRankings } from '@/hooks/useRankings';
 import { useRewards } from '@/hooks/useRewards';
 import { useToolAchievements } from '@/hooks/useToolAchievements';
 import { useNotifications } from '@/hooks/useNotifications';
+import { ToolAchievement } from '@/services/toolAchievementsService';
+
+// Extended interface for ToolAchievement with UI-specific properties
+interface ExtendedToolAchievement extends ToolAchievement {
+  unlocked?: boolean;
+  unlocked_at?: string;
+  progress?: number;
+  max_progress?: number;
+  title?: string;
+}
+// Import usePDFSimple is below
 import { UnifiedFlowNavigation } from './UnifiedFlowNavigation';
 import { DataSyncStatus } from './DataSyncStatus';
 import { ActivityCharts } from './ActivityCharts';
@@ -125,9 +136,12 @@ export function UnifiedDashboard({ className }: UnifiedDashboardProps) {
   const { trackToolUsage, trackCompletion } = useActivityTracking();
 
   const rewardsData = useRewards();
-  const { rewards = [], isLoadingRewards = false } = rewardsData || {};
+  const { userRewards: rewards = [], isLoadingRewards = false } = rewardsData || {};
   const toolAchievementsData = useToolAchievements();
-  const { achievements: toolAchievements = [], isLoadingAchievements = false } = toolAchievementsData || {};
+  const { toolAchievements: rawToolAchievements = [], isLoading: isLoadingAchievements = false } = toolAchievementsData || {};
+  
+  // Cast the toolAchievements to the extended interface
+  const toolAchievements = rawToolAchievements as ExtendedToolAchievement[];
   const { userPosition, activeCompetitions, isLoadingPosition } = useRankings();
   const { unreadNotifications, isNotificationSystemReady } = useNotifications();
   
@@ -138,7 +152,7 @@ export function UnifiedDashboard({ className }: UnifiedDashboardProps) {
     isGenerating,
     generatePDF,
     isLoadingAccess
-  } = usePDFSimple();
+  } = usePDFSimple();  // Importação correta do hook
 
   const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
   const [isLoadingStats, setIsLoadingStats] = useState(true);

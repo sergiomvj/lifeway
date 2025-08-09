@@ -131,7 +131,7 @@ export function PDFGenerator({
       // Auto-download
       const link = document.createElement('a');
       link.href = pdfUrl;
-      link.download = `criador-de-sonhos-${formData.family_name || 'familia'}-${new Date().toISOString().split('T')[0]}.pdf`;
+      link.download = `criador-de-sonhos-${formData.nome || 'familia'}-${new Date().toISOString().split('T')[0]}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
