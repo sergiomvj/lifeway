@@ -3,6 +3,7 @@ import html2canvas from 'html2canvas';
 import { CriadorSonhosFormData } from '@/types/forms';
 import { UserProfile } from '@/types/userContext';
 import { supabase } from '@/lib/supabaseClient';
+import { getFamilyImageUrl } from '@/utils';
 
 interface PDFGenerationOptions {
   formData: CriadorSonhosFormData;
@@ -451,15 +452,21 @@ class PDFGenerationService {
 
   private async getFamilyImagePool(): Promise<any[]> {
     // Implementar busca de imagens da pasta storage/images/family
-    return [];
+    // Por enquanto, retornamos algumas imagens padrão
+    return [
+      getFamilyImageUrl('default-1.jpg'),
+      getFamilyImageUrl('default-2.jpg'),
+      getFamilyImageUrl('default-3.jpg'),
+      getFamilyImageUrl('default-4.jpg')
+    ];
   }
 
   private getDefaultImages(): string[] {
     return [
-      '/storage/images/family/default-1.jpg',
-      '/storage/images/family/default-2.jpg',
-      '/storage/images/family/default-3.jpg',
-      '/storage/images/family/default-4.jpg'
+      getFamilyImageUrl('default-1.jpg'),
+      getFamilyImageUrl('default-2.jpg'),
+      getFamilyImageUrl('default-3.jpg'),
+      getFamilyImageUrl('default-4.jpg')
     ];
   }
 

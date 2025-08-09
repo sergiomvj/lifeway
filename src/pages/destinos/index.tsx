@@ -11,8 +11,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useUserContext } from '@/hooks/useUserContext';
-import { useFavoriteCities } from '@/contexts/FavoriteCitiesContext';
-import { getCityImageUrl, getDefaultCityImageUrl } from '@/utils/imageUtils';
+import { useFavoriteCities } from '@/contexts';
+import { getCityImageUrl, getDefaultCityImageUrl } from '@/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 

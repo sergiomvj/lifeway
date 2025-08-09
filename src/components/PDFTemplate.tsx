@@ -2,6 +2,7 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
 import { CriadorSonhosFormData } from '@/types/forms';
 import { UserProfile } from '@/types/userContext';
+import { getFamilyImageUrl } from '@/utils';
 
 // Registrar fontes customizadas
 Font.register({
@@ -267,7 +268,7 @@ const PDFTemplate: React.FC<PDFTemplateProps> = ({
 
   const analysisData = processAIAnalysis(aiAnalysis);
   const familyName = formData.nome || userProfile.name || 'Família';
-  const mainImage = selectedImages[0] || '/images/family/default-family.jpg';
+  const mainImage = selectedImages[0] || getFamilyImageUrl('default-family.jpg');
 
   return (
     <Document>

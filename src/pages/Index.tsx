@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Users, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+import { getFamilyImageUrl } from '@/utils';
 import Navbar from "@/components/Navbar";
 import ToolsSection from "@/components/ToolsSection";
 import Footer from "@/components/Footer";
@@ -33,7 +34,7 @@ const Index = () => {
     // Selecionar uma imagem aleatória
     const randomIndex = Math.floor(Math.random() * familyImages.length);
     const selectedImage = familyImages[randomIndex];
-    setBackgroundImage(`/storage/images/family/${selectedImage}`);
+    setBackgroundImage(getFamilyImageUrl(selectedImage));
   }, []);
 
   return (
