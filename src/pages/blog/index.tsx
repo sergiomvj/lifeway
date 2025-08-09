@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Clock, User, Calendar } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabaseClient";
 import Navbar from '@/components/Navbar';
 import ToolsSection from '@/components/ToolsSection';
 import Footer from '@/components/Footer';
@@ -92,6 +92,51 @@ const BlogPage = () => {
     });
   };
 
+  // Função para determinar a cor do card com base na tag
+  const getTagColor = (tagName?: string) => {
+    if (!tagName) return 'bg-gradient-to-br from-lilas to-secondary';
+    
+    // Converter para minúsculas para comparação
+    const tag = tagName.toLowerCase();
+    
+    // Mapear tags para cores específicas
+    if (tag.includes('imigração') || tag.includes('imigracao')) {
+      return 'bg-gradient-to-br from-blue-400 to-blue-600';
+    } else if (tag.includes('trabalho') || tag.includes('emprego') || tag.includes('carreira')) {
+      return 'bg-gradient-to-br from-green-400 to-green-600';
+    } else if (tag.includes('estudo') || tag.includes('educação') || tag.includes('educacao')) {
+      return 'bg-gradient-to-br from-amber-400 to-amber-600';
+    } else if (tag.includes('visto') || tag.includes('visa')) {
+      return 'bg-gradient-to-br from-red-400 to-red-600';
+    } else if (tag.includes('moradia') || tag.includes('casa') || tag.includes('apartamento')) {
+      return 'bg-gradient-to-br from-purple-400 to-purple-600';
+    } else if (tag.includes('saúde') || tag.includes('saude') || tag.includes('health')) {
+      return 'bg-gradient-to-br from-teal-400 to-teal-600';
+    } else if (tag.includes('finanças') || tag.includes('financas') || tag.includes('dinheiro')) {
+      return 'bg-gradient-to-br from-yellow-400 to-yellow-600';
+    } else if (tag.includes('cultura') || tag.includes('adaptação') || tag.includes('adaptacao')) {
+      return 'bg-gradient-to-br from-indigo-400 to-indigo-600';
+    } else if (tag.includes('família') || tag.includes('familia')) {
+      return 'bg-gradient-to-br from-pink-400 to-pink-600';
+    } else if (tag.includes('negócio') || tag.includes('negocio') || tag.includes('empreendedorismo')) {
+      return 'bg-gradient-to-br from-cyan-400 to-cyan-600';
+    }
+    
+    // Cores padrão para outras tags (rotação de 5 cores)
+    const tagHash = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const colorIndex = tagHash % 5;
+    
+    const colorOptions = [
+      'bg-gradient-to-br from-lilas to-secondary',
+      'bg-gradient-to-br from-petroleo to-blue-500',
+      'bg-gradient-to-br from-amber-500 to-orange-600',
+      'bg-gradient-to-br from-emerald-500 to-teal-600',
+      'bg-gradient-to-br from-purple-500 to-pink-500'
+    ];
+    
+    return colorOptions[colorIndex];
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-cinza-claro to-white flex items-center justify-center">
@@ -124,11 +169,8 @@ const BlogPage = () => {
             <Card key={post.id} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
               <Link to={`/blog/${post.slug}`} className="block">
                 <div className="relative">
-                  <div className="w-full h-24 bg-gradient-to-br from-lilas to-secondary rounded-t-lg flex items-center justify-center">
-                    <div className="text-petroleo text-4xl font-baskerville font-bold">
-                      {post.title.charAt(0)}
-                    </div>
-                  </div>
+                  {/* Cor baseada na primeira tag do artigo */}
+                  <div className={`w-full h-24 rounded-t-lg ${getTagColor(post.tags?.[0]?.name)}`}></div>
                   
                   {post.category && (
                     <div className="absolute top-4 right-4">

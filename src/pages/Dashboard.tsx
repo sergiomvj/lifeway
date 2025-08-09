@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import UserContextManager from '@/components/UserContextManager';
+import FavoriteCitiesSection from '@/components/FavoriteCitiesSection';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,8 @@ import {
   Sparkles, 
   ArrowRight,
   CheckCircle,
-  Construction
+  Construction,
+  MapPin
 } from 'lucide-react';
 import { useUserContext } from '@/hooks/useUserContext';
 
@@ -166,6 +168,16 @@ const Dashboard = () => {
               </div>
             </CardFooter>
           </Card>
+        </div>
+
+        {/* Seção de cidades favoritas */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-red-500" />
+            Seus Destinos
+          </h2>
+          
+          <FavoriteCitiesSection />
         </div>
 
         {/* Informações Adicionais */}

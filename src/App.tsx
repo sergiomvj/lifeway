@@ -14,9 +14,11 @@ import Profile from "./pages/Profile";
 import AdminOpenAI from "./pages/AdminOpenAI";
 import FerramentasIndex from "./pages/ferramentas/index";
 import DestinosIndex from "./pages/destinos/index";
+import ComparativoCidades from "./pages/destinos/comparativo";
 import BlogIndex from "./pages/blog/index";
 import Contato from "./pages/Contato";
 import NotFound from "./pages/NotFound";
+import { FavoriteCitiesProvider } from "./contexts/FavoriteCitiesContext";
 
 const queryClient = new QueryClient();
 
@@ -26,25 +28,28 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <div className="min-h-screen flex flex-col">
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dreams" element={<Dreams />} />
-              <Route path="/visamatch" element={<VisaMatch />} />
-              <Route path="/especialista" element={<Especialista />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              <Route path="/admin/openai" element={<ProtectedRoute><AdminOpenAI /></ProtectedRoute>} />
-              <Route path="/ferramentas" element={<FerramentasIndex />} />
-              <Route path="/destinos" element={<DestinosIndex />} />
-              <Route path="/blog" element={<BlogIndex />} />
-              <Route path="/contato" element={<Contato />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-        </div>
+        <FavoriteCitiesProvider>
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dreams" element={<Dreams />} />
+                <Route path="/visamatch" element={<VisaMatch />} />
+                <Route path="/especialista" element={<Especialista />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/admin/openai" element={<ProtectedRoute><AdminOpenAI /></ProtectedRoute>} />
+                <Route path="/ferramentas" element={<FerramentasIndex />} />
+                <Route path="/destinos" element={<DestinosIndex />} />
+                <Route path="/destinos/comparativo" element={<ComparativoCidades />} />
+                <Route path="/blog" element={<BlogIndex />} />
+                <Route path="/contato" element={<Contato />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+          </div>
+        </FavoriteCitiesProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

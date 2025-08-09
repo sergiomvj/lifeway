@@ -11,7 +11,7 @@ import {
   ProgressTracking,
   ActionItem
 } from '@/types/userContext';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabaseClient';
 
 // Hook for managing user context
 export function useUserContext(userId?: string) {
