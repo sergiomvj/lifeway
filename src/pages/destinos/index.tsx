@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Users, DollarSign, Thermometer, Search, Filter, TrendingUp, GraduationCap, Briefcase, Building2 } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { MapPin, Users, DollarSign, Thermometer, Search, Filter, TrendingUp, GraduationCap, Briefcase, Building2, Heart, BarChart3, AlertCircle } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useUserContext } from '@/hooks/useUserContext';
+import { useFavoriteCities } from '@/contexts/FavoriteCitiesContext';
+import { getCityImageUrl, getDefaultCityImageUrl } from '@/utils/imageUtils';
+import { useToast } from '@/components/ui/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 interface City {
   id: string;
@@ -37,14 +44,25 @@ const DestinosIndex = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedState, setSelectedState] = useState<string>('all');
-  const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('name');
+  const [noResultsMessage, setNoResultsMessage] = useState('');
+  const navigate = useNavigate();
+  const userContext = useUserContext();
+  const isAuthenticated = !!userContext.hasContext;
+  const { addFavorite, removeFavorite, isFavorite } = useFavoriteCities();
+  const { toast } = useToast();
 
   // Buscar cidades principais do Supabase
   useEffect(() => {
     const fetchMainCities = async () => {
       try {
         setLoading(true);
+        console.log('Iniciando busca de cidades...');
+        
+        // Usar cliente Supabase diretamente para buscar cidades principais
+        console.log('URL Supabase:', import.meta.env.VITE_PUBLIC_SUPABASE_URL);
+        console.log('Chave anônima definida:', !!import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY);
+        
         const { data, error } = await supabase
           .from('cities')
           .select('*')
@@ -52,12 +70,43 @@ const DestinosIndex = () => {
           .order('name');
 
         if (error) {
-          console.error('Erro ao buscar cidades:', error);
+          console.error('Erro na consulta Supabase:', error);
           return;
         }
 
-        setCities(data || []);
-        setFilteredCities(data || []);
+        console.log(`Cidades encontradas: ${data?.length || 0}`);
+        console.log('Primeira cidade (se existir):', data?.[0]);
+        
+        // Se não houver dados, tentar busca anônima via API REST como fallback
+        if (!data || data.length === 0) {
+          console.log('Tentando busca alternativa via API REST...');
+          const response = await fetch(
+            `${import.meta.env.VITE_PUBLIC_SUPABASE_URL}/rest/v1/cities?main_destiny=eq.true&order=name`,
+            {
+              method: 'GET',
+              headers: {
+                'apikey': import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'count=exact'
+              }
+            }
+          );
+
+          if (!response.ok) {
+            console.error('Erro na resposta da API:', response.status, response.statusText);
+            const errorText = await response.text();
+            console.error('Detalhes do erro:', errorText);
+            return;
+          }
+
+          const fallbackData = await response.json();
+          console.log(`Cidades encontradas (fallback): ${fallbackData?.length || 0}`);
+          setCities(fallbackData || []);
+          setFilteredCities(fallbackData || []);
+        } else {
+          setCities(data);
+          setFilteredCities(data);
+        }
       } catch (error) {
         console.error('Erro na consulta:', error);
       } finally {
@@ -72,11 +121,10 @@ const DestinosIndex = () => {
   useEffect(() => {
     let filtered = cities.filter(city => {
       const matchesSearch = city.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           city.state.toLowerCase().includes(searchTerm.toLowerCase());
+                         city.state.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesState = selectedState === 'all' || city.state === selectedState;
-      const matchesRegion = selectedRegion === 'all' || city.region === selectedRegion;
       
-      return matchesSearch && matchesState && matchesRegion;
+      return matchesSearch && matchesState;
     });
 
     // Ordenar
@@ -92,17 +140,18 @@ const DestinosIndex = () => {
       }
     });
 
+    // Definir mensagem para busca sem resultados
+    if (filtered.length === 0 && searchTerm) {
+      setNoResultsMessage(`Nenhuma cidade encontrada com "${searchTerm}". Tente outro termo ou verifique se a cidade está disponível para comparação.`);
+    } else {
+      setNoResultsMessage('');
+    }
+
     setFilteredCities(filtered);
-  }, [cities, searchTerm, selectedState, selectedRegion, sortBy]);
+  }, [cities, searchTerm, selectedState, sortBy]);
 
   // Obter estados únicos
   const uniqueStates = Array.from(new Set(cities.map(city => city.state))).sort();
-  const uniqueRegions = Array.from(new Set(cities.map(city => city.region).filter(Boolean))).sort();
-
-  // Função para obter URL da imagem da cidade
-  const getCityImageUrl = (cityId: string) => {
-    return `/storage/images/maincities/${cityId}.jpg`;
-  };
 
   // Função para formatar população
   const formatPopulation = (population: number) => {
@@ -135,10 +184,17 @@ const DestinosIndex = () => {
           <h1 className="text-4xl md:text-5xl font-baskerville font-bold text-petroleo mb-4">
             Destinos Principais
           </h1>
-          <p className="text-lg text-gray-600 font-figtree max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 font-figtree max-w-2xl mx-auto mb-6">
             Descubra as melhores cidades americanas para começar sua nova vida. 
             Explore oportunidades, custos de vida e qualidade de vida.
           </p>
+          
+          {/* Container informativo */}
+          <div className="bg-petroleo text-white rounded-lg p-6 max-w-4xl mx-auto shadow-md">
+            <p className="text-sm md:text-base leading-relaxed">
+              Os índices LifeWayUSA de empregabilidade, qualidade de ensino, custo de vida e oportunidades de negócios foram obtidos com o cruzamento de dezenas de relatórios oficiais do governo americano com objetivo de estabelecer um critério justo de comparação entre diferentes cidades, com base num algorítimo exclusivo para oferecer a você essa possibilidade. As médias refletem a situação da cidade frente uma <strong>média nacional igual 1</strong> para atribuir diferenças de abordagem pelas autoridades locais para os parâmetros em questão. Dessa forma índices acima ou abaixo de 1 refletem a situação de cada cidade.
+            </p>
+          </div>
         </div>
 
         {/* Filtros */}
@@ -169,19 +225,6 @@ const DestinosIndex = () => {
               </SelectContent>
             </Select>
 
-            {/* Filtro por Região */}
-            <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-              <SelectTrigger>
-                <SelectValue placeholder="Todas as Regiões" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas as Regiões</SelectItem>
-                {uniqueRegions.map(region => (
-                  <SelectItem key={region} value={region}>{region}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
             {/* Ordenação */}
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger>
@@ -200,13 +243,22 @@ const DestinosIndex = () => {
               onClick={() => {
                 setSearchTerm('');
                 setSelectedState('all');
-                setSelectedRegion('all');
                 setSortBy('name');
               }}
               className="w-full"
             >
               <Filter className="w-4 h-4 mr-2" />
               Limpar Filtros
+            </Button>
+            
+            {/* Botão Comparativo de Cidades */}
+            <Button 
+              variant="default" 
+              onClick={() => navigate('/destinos/comparativo')}
+              className="w-full bg-lilas hover:bg-lilas/90"
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Comparativo de Cidades
             </Button>
           </div>
           </div>
@@ -220,9 +272,19 @@ const DestinosIndex = () => {
               <h3 className="text-xl font-semibold text-gray-600 mb-2">
                 Nenhuma cidade encontrada
               </h3>
-              <p className="text-gray-500">
-                Tente ajustar seus filtros para encontrar mais resultados.
-              </p>
+              {noResultsMessage ? (
+                <Alert className="max-w-lg mx-auto mt-4 bg-amber-50 border-amber-200">
+                  <AlertCircle className="h-4 w-4 text-amber-600" />
+                  <AlertTitle className="text-amber-800">Busca sem resultados</AlertTitle>
+                  <AlertDescription className="text-amber-700">
+                    {noResultsMessage}
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <p className="text-gray-500">
+                  Tente ajustar seus filtros para encontrar mais resultados.
+                </p>
+              )}
             </div>
           ) : (
             <>
@@ -243,7 +305,7 @@ const DestinosIndex = () => {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = '/storage/images/cities/default-city.jpg';
+                          target.src = getDefaultCityImageUrl();
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -254,13 +316,93 @@ const DestinosIndex = () => {
                           </Badge>
                         )}
                       </div>
+                      
+                      {/* Botão de Favorito */}
+                      <div className="absolute top-4 right-4">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className={`rounded-full p-1 ${isAuthenticated ? 'bg-white/80 hover:bg-white/90' : 'bg-white/50 cursor-not-allowed'}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (isAuthenticated) {
+                                    if (isFavorite(city.id)) {
+                                      removeFavorite(city.id);
+                                    } else {
+                                      addFavorite(city.id, city.name, city.state);
+                                    }
+                                  } else {
+                                    toast({
+                                      title: "Login necessário",
+                                      description: "Crie uma conta ou faça login para adicionar cidades aos favoritos.",
+                                      variant: "default"
+                                    });
+                                  }
+                                }}
+                                disabled={!isAuthenticated}
+                              >
+                                <Heart
+                                  className={`h-5 w-5 ${isFavorite(city.id) ? 'fill-red-500 text-red-500' : isAuthenticated ? 'text-gray-600' : 'text-gray-400'}`}
+                                />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="left">
+                              {isAuthenticated
+                                ? (isFavorite(city.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos')
+                                : 'Crie seu perfil para desbloquear'}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                     </div>
 
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between mb-2">
-                        <CardTitle className="text-xl font-baskerville text-petroleo group-hover:text-lilas transition-colors">
-                          {city.name}
-                        </CardTitle>
+                        <div className="flex items-center justify-between w-full">
+                          <CardTitle className="text-xl font-baskerville text-petroleo group-hover:text-lilas transition-colors">
+                            {city.name}
+                          </CardTitle>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className={`rounded-full p-1 ${isAuthenticated ? 'hover:bg-gray-100' : 'cursor-not-allowed'}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (isAuthenticated) {
+                                      if (isFavorite(city.id)) {
+                                        removeFavorite(city.id);
+                                      } else {
+                                        addFavorite(city.id, city.name, city.state);
+                                      }
+                                    } else {
+                                      toast({
+                                        title: "Login necessário",
+                                        description: "Crie uma conta ou faça login para adicionar cidades aos favoritos.",
+                                        variant: "default"
+                                      });
+                                    }
+                                  }}
+                                  disabled={!isAuthenticated}
+                                >
+                                  <Heart
+                                    className={`h-4 w-4 ${isAuthenticated && isFavorite(city.id) ? 'fill-red-500 text-red-500' : isAuthenticated ? 'text-gray-600' : 'text-gray-400'}`}
+                                  />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent side="left">
+                                {isAuthenticated
+                                  ? (isFavorite(city.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos')
+                                  : 'Crie seu perfil para desbloquear'}
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                         <Badge variant="outline" className="text-xs">
                           {city.state}
                         </Badge>
@@ -276,14 +418,32 @@ const DestinosIndex = () => {
                             </span>
                           </div>
                         )}
-                        {city.average_temperature && (
-                          <div className="flex items-center space-x-1">
-                            <span className="text-xs text-petroleo">🌡️</span>
-                            <span className="text-xs text-gray-600">
-                              {city.average_temperature.celsius}°C / {city.average_temperature.fahrenheit}°F
-                            </span>
-                          </div>
-                        )}
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs text-petroleo">🌡️</span>
+                          <span className="text-xs text-gray-600">
+                            {(() => {
+                              // Verificar se average_temperature existe e é uma string (JSONB do Supabase)
+                              if (city.average_temperature) {
+                                // Se for string, tentar fazer parse
+                                if (typeof city.average_temperature === 'string') {
+                                  try {
+                                    const temp = JSON.parse(city.average_temperature);
+                                    return `${temp.celsius || 0}°C / ${temp.fahrenheit || 32}°F`;
+                                  } catch (e) {
+                                    console.error('Erro ao parsear temperatura:', e);
+                                    return '0°C / 32°F';
+                                  }
+                                }
+                                // Se já for objeto, usar diretamente
+                                else if (typeof city.average_temperature === 'object') {
+                                  return `${city.average_temperature.celsius || 0}°C / ${city.average_temperature.fahrenheit || 32}°F`;
+                                }
+                              }
+                              // Fallback para valores ausentes
+                              return '0°C / 32°F';
+                            })()}
+                          </span>
+                        </div>
                       </div>
 
                       {/* Descrição limitada a 150 caracteres */}
@@ -318,7 +478,7 @@ const DestinosIndex = () => {
                               <span className="text-xs font-medium text-gray-700">Empregabilidade</span>
                             </div>
                             <span className="text-sm font-semibold text-petroleo">
-                              {city.job_market_score}/10
+                              {city.job_market_score}
                             </span>
                           </div>
                         )}
@@ -329,7 +489,7 @@ const DestinosIndex = () => {
                               <span className="text-xs font-medium text-gray-700">Ensino</span>
                             </div>
                             <span className="text-sm font-semibold text-petroleo">
-                              {city.education_score}/10
+                              {city.education_score}
                             </span>
                           </div>
                         )}
@@ -340,7 +500,7 @@ const DestinosIndex = () => {
                               <span className="text-xs font-medium text-gray-700">Negócios</span>
                             </div>
                             <span className="text-sm font-semibold text-petroleo">
-                              {city.business_opportunity_score}/10
+                              {city.business_opportunity_score}
                             </span>
                           </div>
                         )}
@@ -357,16 +517,79 @@ const DestinosIndex = () => {
                         </div>
                       )}
 
-                      {/* Botão Ver Detalhes */}
-                      <Button 
-                        className="w-full bg-petroleo hover:bg-petroleo/90 text-white group-hover:bg-lilas transition-all"
-                        onClick={() => {
-                          // Implementar navegação para detalhes da cidade
-                          console.log(`Ver detalhes de ${city.name}`);
-                        }}
-                      >
-                        Ver Detalhes
-                      </Button>
+                      {/* Botões */}
+                      <div className="grid grid-cols-1 gap-2">
+                        {/* Botões Ver Detalhes e Favoritar lado a lado */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button 
+                            className="w-full bg-petroleo hover:bg-petroleo/90 text-white group-hover:bg-lilas transition-all"
+                            onClick={() => navigate(`/destinos/${city.id}`)}
+                          >
+                            Ver Detalhes
+                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                className={`w-full ${isFavorite(city.id) ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-300 hover:bg-gray-400'} text-white transition-all`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (isAuthenticated) {
+                                    if (isFavorite(city.id)) {
+                                      removeFavorite(city.id);
+                                    } else {
+                                      addFavorite(city.id, city.name, city.state);
+                                    }
+                                  } else {
+                                    toast({
+                                      title: "Login necessário",
+                                      description: "Crie uma conta ou faça login para adicionar cidades aos favoritos.",
+                                      variant: "default"
+                                    });
+                                  }
+                                }}
+                                disabled={!isAuthenticated}
+                              >
+                                {isFavorite(city.id) ? (
+                                  <>
+                                    <Heart className="w-4 h-4 mr-2 fill-white" />
+                                    Favorito
+                                  </>
+                                ) : (
+                                  <>
+                                    <Heart className="w-4 h-4 mr-2" />
+                                    Favoritar
+                                  </>
+                                )}
+                              </Button>
+                            </TooltipTrigger>
+                            {!isAuthenticated && (
+                              <TooltipContent side="top">
+                                <p>Crie o seu perfil antes</p>
+                              </TooltipContent>
+                            )}
+                          </Tooltip>
+                        </div>
+                        <Button 
+                          variant="default" 
+                          onClick={() => navigate('/destinos/comparativo')}
+                          className="w-full bg-lilas hover:bg-lilas/90"
+                        >
+                          <BarChart3 className="w-4 h-4 mr-2" />
+                          Comparativo de Cidades
+                        </Button>
+                        
+                        {/* Link para recursos extras */}
+                        {!isAuthenticated && (
+                          <div className="mt-2 text-center">
+                            <Link 
+                              to="/login" 
+                              className="text-xs text-petroleo hover:text-lilas hover:underline transition-all"
+                            >
+                              Acesse recursos extras
+                            </Link>
+                          </div>
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
