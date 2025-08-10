@@ -385,7 +385,7 @@ const CityDetailPage = () => {
                       <div 
                         className="w-24 h-24 bg-cover bg-center" 
                         style={{ 
-                          backgroundImage: `url(${getCityImageUrl(relatedCity.image_url)})` 
+                          backgroundImage: `url(${getCityImageUrl(relatedCity.id)})` 
                         }}
                       />
                       <div className="p-4">
