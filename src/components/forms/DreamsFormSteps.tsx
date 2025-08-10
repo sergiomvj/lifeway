@@ -83,7 +83,7 @@ export const PersonalInfoStep: React.FC<StepProps> = ({
   getValidationSuggestions 
 }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full px-2 sm:px-0">
       <div className="text-center mb-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           Vamos começar conhecendo você
@@ -93,7 +93,7 @@ export const PersonalInfoStep: React.FC<StepProps> = ({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full">
         <FieldWrapper
           field="nome"
           label="Nome completo"
@@ -163,7 +163,7 @@ export const PersonalInfoStep: React.FC<StepProps> = ({
           onChange={(e) => updateFormData('experiencia', e.target.value)}
           placeholder="Descreva sua experiência profissional, principais conquistas e habilidades..."
           rows={4}
-          className={getFieldState('experiencia').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('experiencia').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
     </div>
@@ -178,7 +178,7 @@ export const GoalsStep: React.FC<StepProps> = ({
   getValidationSuggestions 
 }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full px-2 sm:px-0">
       <div className="text-center mb-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           Qual é o seu sonho americano?
@@ -202,11 +202,11 @@ export const GoalsStep: React.FC<StepProps> = ({
           onChange={(e) => updateFormData('objetivo_principal', e.target.value)}
           placeholder="Descreva seu principal objetivo ao se mudar para os EUA..."
           rows={3}
-          className={getFieldState('objetivo_principal').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('objetivo_principal').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full">
         <FieldWrapper
           field="categoria"
           label="Categoria principal"
@@ -279,7 +279,7 @@ export const GoalsStep: React.FC<StepProps> = ({
           value={formData.timeline}
           onChange={(e) => updateFormData('timeline', e.target.value)}
           placeholder="Ex: 6 meses, 1 ano, 2-3 anos..."
-          className={getFieldState('timeline').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('timeline').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
     </div>
@@ -294,7 +294,7 @@ export const CurrentSituationStep: React.FC<StepProps> = ({
   getValidationSuggestions 
 }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full px-2 sm:px-0">
       <div className="text-center mb-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           Sua situação atual
@@ -318,7 +318,7 @@ export const CurrentSituationStep: React.FC<StepProps> = ({
           onChange={(e) => updateFormData('situacao_atual', e.target.value)}
           placeholder="Descreva sua situação profissional, familiar e financeira atual..."
           rows={4}
-          className={getFieldState('situacao_atual').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('situacao_atual').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
 
@@ -336,7 +336,7 @@ export const CurrentSituationStep: React.FC<StepProps> = ({
           onChange={(e) => updateFormData('recursos_disponiveis', e.target.value)}
           placeholder="Inclua recursos financeiros, educacionais, profissionais e pessoais..."
           rows={4}
-          className={getFieldState('recursos_disponiveis').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('recursos_disponiveis').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
 
@@ -354,7 +354,7 @@ export const CurrentSituationStep: React.FC<StepProps> = ({
           onChange={(e) => updateFormData('obstaculos', e.target.value)}
           placeholder="Mencione desafios como idioma, visto, financeiro ou profissional..."
           rows={4}
-          className={getFieldState('obstaculos').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('obstaculos').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
     </div>
@@ -369,7 +369,7 @@ export const SpecificDetailsStep: React.FC<StepProps> = ({
   getValidationSuggestions 
 }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full px-2 sm:px-0">
       <div className="text-center mb-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
           Detalhes específicos
@@ -393,7 +393,7 @@ export const SpecificDetailsStep: React.FC<StepProps> = ({
           onChange={(e) => updateFormData('detalhes_especificos', e.target.value)}
           placeholder="Inclua preferências de localização, tipo de trabalho, estilo de vida..."
           rows={4}
-          className={getFieldState('detalhes_especificos').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('detalhes_especificos').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
 
@@ -411,7 +411,7 @@ export const SpecificDetailsStep: React.FC<StepProps> = ({
           onChange={(e) => updateFormData('motivacao', e.target.value)}
           placeholder="Explique o que o motiva e como isso mudará sua vida..."
           rows={4}
-          className={getFieldState('motivacao').showError ? 'border-red-500' : ''}
+          className={`w-full max-w-full ${getFieldState('motivacao').showError ? 'border-red-500' : ''}`}
         />
       </FieldWrapper>
 

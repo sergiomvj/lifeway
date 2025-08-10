@@ -212,10 +212,10 @@ export function MultistepForm<T extends Record<string, any>>({
   }, [currentStep, completedSteps]);
 
   return (
-    <div className={cn("max-w-4xl mx-auto", className)}>
+    <div className={cn("w-full max-w-4xl mx-auto px-4 sm:px-6", className)}>
       {/* Step Indicator */}
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 overflow-x-auto pb-2 hide-scrollbar">
           {steps.map((step, index) => {
             const status = canProceedToStep(index) ? 'completed' : 'pending';
             return (
@@ -237,7 +237,7 @@ export function MultistepForm<T extends Record<string, any>>({
 
                 {index < steps.length - 1 && (
                   <div className={cn(
-                    "w-16 h-0.5 mx-2",
+                    "w-8 sm:w-16 h-0.5 mx-1 sm:mx-2",
                     index < currentStep ? "bg-green-500" : "bg-gray-300"
                   )} />
                 )}
@@ -314,7 +314,7 @@ export function MultistepForm<T extends Record<string, any>>({
           </AnimatePresence>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center pt-6 mt-6 border-t">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 mt-6 border-t">
             <Button
               type="button"
               variant="outline"
@@ -326,7 +326,7 @@ export function MultistepForm<T extends Record<string, any>>({
               Anterior
             </Button>
 
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 w-full sm:w-auto justify-end">
               <Button
                 variant="ghost"
                 size="sm"

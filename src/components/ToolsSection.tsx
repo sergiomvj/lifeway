@@ -30,12 +30,12 @@ const ToolsSection = () => {
   ];
 
   const ferramentasFuturas = [
-    { titulo: "GetOpportunity", icone: Briefcase },
-    { titulo: "FamilyPlanner", icone: Users },
-    { titulo: "CalcWay", icone: Calculator },
-    { titulo: "Serviceway", icone: CheckCircle },
-    { titulo: "InterviewSim", icone: MessageCircle },
-    { titulo: "ProjectUSA", icone: ArrowRight }
+    { titulo: "GetOpportunity", icone: Briefcase, link: "/ferramentas/get-opportunity" },
+    { titulo: "FamilyPlanner", icone: Users, link: "/ferramentas/family-planner" },
+    { titulo: "CalcWay", icone: Calculator, link: "/ferramentas/calcway" },
+    { titulo: "Serviceway", icone: CheckCircle, link: "/ferramentas/service-way" },
+    { titulo: "InterviewSim", icone: MessageCircle, link: "/ferramentas/simulador-entrevista" },
+    { titulo: "ProjectUSA", icone: ArrowRight, link: "/ferramentas/project-usa" }
   ];
 
   return (
@@ -92,14 +92,16 @@ const ToolsSection = () => {
           {ferramentasFuturas.map((ferramenta, index) => {
             const IconComponent = ferramenta.icone;
             return (
-              <div key={index} className="text-center p-4 bg-white rounded-lg border border-gray-200">
-                <IconComponent className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                <p className="text-sm font-medium text-gray-600">{ferramenta.titulo}</p>
-                <Badge variant="secondary" className="mt-2">
-                  <Clock className="w-3 h-3 mr-1" />
-                  Em breve
-                </Badge>
-              </div>
+              <Link key={index} to={ferramenta.link} className="block">
+                <div className="text-center p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all">
+                  <IconComponent className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                  <p className="text-sm font-medium text-gray-600">{ferramenta.titulo}</p>
+                  <Badge variant="secondary" className="mt-2">
+                    <Clock className="w-3 h-3 mr-1" />
+                    Em breve
+                  </Badge>
+                </div>
+              </Link>
             );
           })}
         </div>

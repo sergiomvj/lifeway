@@ -118,8 +118,8 @@ const ComparativoCidades = () => {
       <Navbar />
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex items-center mb-8">
+      <div className="container mx-auto px-2 md:px-4 py-8 md:py-12">
+        <div className="flex flex-wrap items-center mb-6 md:mb-8">
           <Button 
             variant="ghost" 
             onClick={() => navigate('/destinos')}
@@ -140,8 +140,8 @@ const ComparativoCidades = () => {
             <CardTitle className="text-xl text-petroleo">Selecione as cidades para comparar</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="w-full md:w-64">
+            <div className="flex flex-wrap gap-2 md:gap-4 items-center">
+              <div className="w-full sm:w-48 md:w-64">
                 <Select onValueChange={addCityToComparison}>
                   <SelectTrigger>
                     <SelectValue placeholder="Adicionar cidade" />
@@ -181,7 +181,7 @@ const ComparativoCidades = () => {
 
             {/* Cidades selecionadas */}
             {selectedCities.length > 0 && (
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-4 md:mt-6 flex flex-wrap gap-2">
                 {selectedCities.map(city => (
                   <Badge 
                     key={city.id} 
@@ -205,8 +205,8 @@ const ComparativoCidades = () => {
 
         {/* Tabela comparativa */}
         {selectedCities.length >= 2 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <div className="overflow-x-auto -mx-2 md:mx-0 px-2 md:px-0">
+            <table className="w-full border-collapse min-w-[640px]">
               <thead>
                 <tr className="bg-petroleo text-white">
                   <th className="p-4 text-left">Critério</th>

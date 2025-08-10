@@ -37,6 +37,8 @@ const Navbar = () => {
       // Fechar menu mobile e redirecionar para home após logout
       setIsMobileMenuOpen(false);
       navigate('/');
+      // Forçar recarregamento da página para garantir que o estado de autenticação seja atualizado
+      window.location.reload();
     } catch (error) {
       console.error('Erro inesperado ao fazer logout:', error);
     }
@@ -47,7 +49,10 @@ const Navbar = () => {
   };
 
   // Verificar se o usuário está logado
-  const isLoggedIn = !!user || !!userContext;
+  // Usando a verificação do objeto user do Supabase para maior consistência
+  // Adicionando console.log para debug
+  console.log('Auth status:', { user, userContext, isLoading });
+  const isLoggedIn = !!user;
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -93,13 +98,15 @@ const Navbar = () => {
             >
               Contato
             </Link>
-            <Link 
-              to="/dashboard" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
-            >
-              <BarChart3 className="h-4 w-4" />
-              Dashboard
-            </Link>
+            {isLoggedIn && (
+              <Link 
+                to="/dashboard" 
+                className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
+              >
+                <BarChart3 className="h-4 w-4" />
+                Dashboard
+              </Link>
+            )}
             {isLoggedIn && (
               <Link 
                 to="/profile" 
@@ -179,16 +186,18 @@ const Navbar = () => {
               >
                 Contato
               </Link>
-              <Link 
-                to="/dashboard" 
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                onClick={handleMobileLinkClick}
-              >
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4" />
-                  Dashboard
-                </div>
-              </Link>
+              {isLoggedIn && (
+                <Link 
+                  to="/dashboard" 
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                  onClick={handleMobileLinkClick}
+                >
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4" />
+                    Dashboard
+                  </div>
+                </Link>
+              )}
               {isLoggedIn && (
                 <Link 
                   to="/profile" 

@@ -169,61 +169,8 @@ const Especialista = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Sidebar com FAQ e informações - Mais larga */}
-          <div className="lg:col-span-1 space-y-4">
-            {/* Perguntas Frequentes na Sidebar */}
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center text-base text-blue-700">
-                  <Lightbulb className="w-5 h-5 mr-2 text-yellow-500" />
-                  Perguntas Frequentes
-                </CardTitle>
-                <p className="text-xs text-blue-600">
-                  Clique para inserir no chat
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {quickQuestions.map((question, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-left justify-start h-auto p-3 text-xs leading-relaxed border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all"
-                    onClick={() => handleQuickQuestion(question)}
-                  >
-                    {question}
-                  </Button>
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="bg-green-50 border-green-200">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Clock className="w-4 h-4 text-green-500" />
-                  <span className="text-sm font-medium text-green-600">Online</span>
-                </div>
-                <p className="text-xs text-gray-600">
-                  Especialista disponível 24/7 para suas dúvidas sobre imigração.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-orange-50 border-orange-200">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <FileText className="w-4 h-4 text-orange-500" />
-                  <span className="text-sm font-medium text-orange-600">Dica</span>
-                </div>
-                <p className="text-xs text-gray-600">
-                  Seja específico em suas perguntas para obter respostas mais precisas.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Área do chat - Ajustada para nova proporção */}
-          <div className="lg:col-span-2">
+          {/* Área do chat - Em telas pequenas ocupa toda a largura, em telas grandes ocupa 2/3 */}
+          <div className="lg:col-span-2 order-1">
             <Card className="h-[600px] flex flex-col">
               <CardHeader className="flex-shrink-0">
                 <div className="flex items-center space-x-2">
@@ -313,6 +260,59 @@ const Especialista = () => {
                     </Button>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar com FAQ e informações - Em telas pequenas fica abaixo do chat, em telas grandes fica ao lado */}
+          <div className="lg:col-span-1 space-y-4 order-2 lg:order-1">
+            {/* Perguntas Frequentes na Sidebar */}
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center text-base text-blue-700">
+                  <Lightbulb className="w-5 h-5 mr-2 text-yellow-500" />
+                  Perguntas Frequentes
+                </CardTitle>
+                <p className="text-xs text-blue-600">
+                  Clique para inserir no chat
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {quickQuestions.map((question, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-left justify-start h-auto p-3 text-xs leading-relaxed border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all"
+                    onClick={() => handleQuickQuestion(question)}
+                  >
+                    {question}
+                  </Button>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-green-50 border-green-200">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Clock className="w-4 h-4 text-green-500" />
+                  <span className="text-sm font-medium text-green-600">Online</span>
+                </div>
+                <p className="text-xs text-gray-600">
+                  Especialista disponível 24/7 para suas dúvidas sobre imigração.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-orange-50 border-orange-200">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FileText className="w-4 h-4 text-orange-500" />
+                  <span className="text-sm font-medium text-orange-600">Dica</span>
+                </div>
+                <p className="text-xs text-gray-600">
+                  Seja específico em suas perguntas para obter respostas mais precisas.
+                </p>
               </CardContent>
             </Card>
           </div>
