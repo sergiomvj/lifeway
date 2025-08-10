@@ -143,6 +143,7 @@ const CityDetailPage = () => {
   const [relatedCities, setRelatedCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isFromDestinos, setIsFromDestinos] = useState(false);
 
   useEffect(() => {
     async function loadCityData() {
@@ -160,6 +161,16 @@ const CityDetailPage = () => {
         }
         
         setCity(cityData);
+        
+        // Verificar se a cidade veio da página destinos (main_destiny = true)
+        // ou da página cities (todas as cidades)
+        const { data: cityCheck } = await supabase
+          .from('cities')
+          .select('main_destiny')
+          .eq('id', id)
+          .single();
+        
+        setIsFromDestinos(cityCheck?.main_destiny === true);
         
         // Carregar cidades relacionadas
         const related = await getRelatedCities(id, 4);
@@ -265,7 +276,7 @@ const CityDetailPage = () => {
       <div 
         className="relative h-80 bg-cover bg-center" 
         style={{ 
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${getCityImageUrl(city.id)})` 
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(${isFromDestinos ? getMainCityImageUrl(city.id) : getCityImageUrl(city.id)})` 
         }}
       >
         <div className="container mx-auto px-4 h-full flex flex-col justify-end pb-8">
@@ -359,14 +370,15 @@ const CityDetailPage = () => {
               </Card>
               
               <Card>
-                <CardContent className="text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <GraduationCap className="w-6 h-6 mr-2 text-primary" />
+                <CardContent className="pt-6">
+                  <div className="flex items-center mb-4">
+                    <GraduationCap className="w-5 h-5 text-blue-600 mr-2" />
                     <h3 className="font-medium">Educação</h3>
                   </div>
                   <p className="text-2xl font-bold">
                     {formatIndex(city.education_score)}
                   </p>
+                  <p className="text-sm text-gray-500 mt-1">índice educacional</p>
                 </CardContent>
               </Card>
               
@@ -398,46 +410,22 @@ const CityDetailPage = () => {
             </div>
           </div>
           
-          {/* Right Column - Related Cities */}
+          {/* Right Column - Navigation */}
           <div>
-            <h2 className="text-xl font-bold mb-4">Cidades Relacionadas</h2>
             <div className="space-y-4">
-              {relatedCities.length > 0 ? (
-                relatedCities.map((relatedCity) => (
-                  <Card 
-                    key={relatedCity.id} 
-                    className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                    onClick={() => navigate(`/destinos/cidade/${relatedCity.id}`)}
-                  >
-                    <div className="flex">
-                      <div 
-                        className="w-24 h-24 bg-cover bg-center" 
-                        style={{ 
-                          backgroundImage: `url(${getCityImageUrl(relatedCity.id)})` 
-                        }}
-                      />
-                      <div className="p-4">
-                        <h3 className="font-bold">{relatedCity.name}</h3>
-                        <p className="text-sm text-gray-600">{relatedCity.state}, {relatedCity.country}</p>
-                        <div className="flex items-center mt-2">
-                          <Star className="w-4 h-4 text-amber-500 mr-1" />
-                          <span className="text-sm">{relatedCity.education_score?.toFixed(1) || 'N/A'} índice educacional</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))
-              ) : (
-                <p className="text-gray-500">Nenhuma cidade relacionada encontrada.</p>
-              )}
-            </div>
-            
-            <div className="mt-8">
               <Button 
                 className="w-full"
                 onClick={() => navigate('/destinos')}
               >
                 Ver Todos os Destinos
+              </Button>
+              
+              <Button 
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate('/cities')}
+              >
+                Ver Todas as Cidades
               </Button>
             </div>
           </div>
