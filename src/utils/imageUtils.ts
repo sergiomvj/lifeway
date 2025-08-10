@@ -33,11 +33,26 @@ export function getFamilyImageUrl(filename: string): string {
 
 /**
  * Retorna o URL para uma imagem de cidade
- * @param cityId ID da cidade ou nome do arquivo
+ * @param cityIdOrUrl ID da cidade, nome do arquivo ou URL completa
  * @returns URL completo da imagem
  */
-export function getCityImageUrl(cityId: string): string {
-  return getImageUrl(`/storage/images/maincities/${cityId}.jpg`);
+export function getCityImageUrl(cityIdOrUrl: string | undefined): string {
+  if (!cityIdOrUrl) {
+    return getDefaultCityImageUrl();
+  }
+  
+  // Se já for uma URL completa, retorna como está
+  if (cityIdOrUrl.startsWith('http') || cityIdOrUrl.startsWith('/')) {
+    return cityIdOrUrl;
+  }
+  
+  // Verifica se o ID já contém extensão
+  if (cityIdOrUrl.endsWith('.jpg') || cityIdOrUrl.endsWith('.png') || cityIdOrUrl.endsWith('.jpeg')) {
+    return getImageUrl(`/storage/images/maincities/${cityIdOrUrl}`);
+  }
+  
+  // Caso contrário, adiciona extensão .jpg
+  return getImageUrl(`/storage/images/maincities/${cityIdOrUrl}.jpg`);
 }
 
 /**
