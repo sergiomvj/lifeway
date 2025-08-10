@@ -2,8 +2,8 @@
  * Utilitário para gerenciar URLs de imagens em diferentes ambientes
  */
 
-// URL base para imagens em produção (domínio do Coolify)
-const PRODUCTION_BASE_URL = 'https://ikowkkkccc0g8o8c0w8swgk0.fbrnews.co';
+// URL base para imagens em produção (mesmo domínio do app para evitar CORS)
+const PRODUCTION_BASE_URL = 'https://lifewayusa.fbrnews.co';
 
 /**
  * Retorna o URL completo para uma imagem, considerando o ambiente atual
