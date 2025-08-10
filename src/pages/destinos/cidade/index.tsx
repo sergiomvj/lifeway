@@ -239,7 +239,25 @@ const CityDetailPage = () => {
         {/* Logs em formato JSX válido */}
         {(()=>{
           console.log('City ID para Hero:', city.id);
-          console.log('URL da imagem do Hero:', getCityImageUrl(city.id));
+          const imageUrl = getCityImageUrl(city.id);
+          console.log('URL da imagem do Hero:', imageUrl);
+          
+          // Criar uma imagem para testar o carregamento
+          const img = new Image();
+          img.onload = () => console.log('[Hero] Imagem carregada com sucesso:', imageUrl);
+          img.onerror = () => {
+            console.error('[Hero] Erro ao carregar imagem:', imageUrl);
+            // Tenta fazer um fetch direto para verificar o status da resposta
+            fetch(imageUrl)
+              .then(response => {
+                console.log('[Hero] Status da resposta:', response.status, response.statusText);
+                return response.blob();
+              })
+              .then(blob => console.log('[Hero] Tipo de conteúdo:', blob.type))
+              .catch(error => console.error('[Hero] Erro no fetch:', error));
+          };
+          img.src = imageUrl;
+          
           return null;
         })()}
       </div>
