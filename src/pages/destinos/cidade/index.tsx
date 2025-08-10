@@ -234,6 +234,16 @@ const CityDetailPage = () => {
       <Navbar />
       
       {/* Hero Section */}
+      {/* Debug logs para URL da imagem */}
+      <div className="hidden">
+        {/* Logs em formato JSX válido */}
+        {(()=>{
+          console.log('City ID para Hero:', city.id);
+          console.log('URL da imagem do Hero:', getCityImageUrl(city.id));
+          return null;
+        })()}
+      </div>
+      
       <div 
         className="relative h-80 bg-cover bg-center" 
         style={{ 

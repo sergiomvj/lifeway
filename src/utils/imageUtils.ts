@@ -37,22 +37,30 @@ export function getFamilyImageUrl(filename: string): string {
  * @returns URL completo da imagem
  */
 export function getCityImageUrl(cityIdOrUrl: string | undefined): string {
+  console.log('[getCityImageUrl] Input:', cityIdOrUrl);
+  
   if (!cityIdOrUrl) {
+    console.log('[getCityImageUrl] Input vazio, usando imagem padrão');
     return getDefaultCityImageUrl();
   }
   
   // Se já for uma URL completa, retorna como está
   if (cityIdOrUrl.startsWith('http') || cityIdOrUrl.startsWith('/')) {
+    console.log('[getCityImageUrl] URL completa detectada, retornando como está');
     return cityIdOrUrl;
   }
   
   // Verifica se o ID já contém extensão
   if (cityIdOrUrl.endsWith('.jpg') || cityIdOrUrl.endsWith('.png') || cityIdOrUrl.endsWith('.jpeg')) {
-    return getImageUrl(`/storage/images/maincities/${cityIdOrUrl}`);
+    const url = getImageUrl(`/storage/images/maincities/${cityIdOrUrl}`);
+    console.log('[getCityImageUrl] ID com extensão, URL gerada:', url);
+    return url;
   }
   
   // Caso contrário, adiciona extensão .jpg
-  return getImageUrl(`/storage/images/maincities/${cityIdOrUrl}.jpg`);
+  const url = getImageUrl(`/storage/images/maincities/${cityIdOrUrl}.jpg`);
+  console.log('[getCityImageUrl] ID sem extensão, URL gerada com .jpg:', url);
+  return url;
 }
 
 /**
