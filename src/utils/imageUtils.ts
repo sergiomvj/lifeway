@@ -104,23 +104,13 @@ export function getDefaultCityImageUrl(): string {
 }
 
 /**
- * Retorna o URL para uma imagem aleatória da família (para Hero da home)
- * @returns URL completo da imagem aleatória
+ * Retorna o URL para a imagem fixa da família (para Hero da home)
+ * @returns URL completo da imagem fixa
  */
 export function getRandomFamilyImageUrl(): string {
-  // Lista de imagens disponíveis na pasta family
-  const familyImages = [
-    'default-1.jpg',
-    'default-2.jpg',
-    'default-3.jpg',
-    'default-4.jpg',
-    'default-5.jpg'
-  ];
+  // Imagem fixa para evitar delay no carregamento
+  const fixedImage = 'derek-owens-cmzlFICyL6Y-unsplash.jpg';
   
-  // Seleciona uma imagem aleatória
-  const randomIndex = Math.floor(Math.random() * familyImages.length);
-  const selectedImage = familyImages[randomIndex];
-  
-  console.log('[getRandomFamilyImageUrl] Imagem selecionada:', selectedImage);
-  return getFamilyImageUrl(selectedImage);
+  console.log('[getRandomFamilyImageUrl] Usando imagem fixa:', fixedImage);
+  return getFamilyImageUrl(fixedImage);
 }

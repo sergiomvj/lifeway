@@ -74,57 +74,73 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <button
-              onClick={handleFerramentasClick}
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Ferramentas
-            </button>
-            <Link 
-              to="/destinos" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Destinos
-            </Link>
-            <Link 
-              to="/blog" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Blog
-            </Link>
-            <Link 
-              to="/contato" 
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              Contato
-            </Link>
-            {isLoggedIn && (
-              <Link 
-                to="/dashboard" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
-              >
-                <BarChart3 className="h-4 w-4" />
-                Dashboard
-              </Link>
+            
+            {/* Menu para usuários NÃO logados */}
+            {!isLoggedIn && (
+              <>
+                <Link 
+                  to="/planeje-sonhe" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Planeje...Sonhe
+                </Link>
+                <Link 
+                  to="/destinos" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Destinos Mais Procurados
+                </Link>
+                <Link 
+                  to="/blog" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Blog
+                </Link>
+                <Link 
+                  to="/contato" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Contato
+                </Link>
+                <Button asChild>
+                  <Link to="/login">Entrar/Cadastrar</Link>
+                </Button>
+              </>
             )}
+            
+            {/* Menu para usuários LOGADOS */}
             {isLoggedIn && (
-              <Link 
-                to="/profile" 
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
-              >
-                <User className="h-4 w-4" />
-                Perfil
-              </Link>
-            )}
-            {isLoggedIn ? (
-              <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2">
-                <LogOut className="h-4 w-4" />
-                Sair
-              </Button>
-            ) : (
-              <Button asChild>
-                <Link to="/login">Entrar/Cadastrar</Link>
-              </Button>
+              <>
+                <Link 
+                  to="/destinos" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Destinos
+                </Link>
+                <Link 
+                  to="/blog" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Blog
+                </Link>
+                <Link 
+                  to="/dashboard" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors flex items-center gap-1"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  Dashboard
+                </Link>
+                <Link 
+                  to="/contato" 
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Contato
+                </Link>
+                <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2">
+                  <LogOut className="h-4 w-4" />
+                  Sair
+                </Button>
+              </>
             )}
           </div>
 
@@ -156,59 +172,76 @@ const Navbar = () => {
               >
                 Home
               </Link>
-              <button
-                onClick={(e) => {
-                  handleFerramentasClick(e);
-                  handleMobileLinkClick();
-                }}
-                className="block w-full text-left px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-              >
-                Ferramentas
-              </button>
-              <Link 
-                to="/destinos" 
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                onClick={handleMobileLinkClick}
-              >
-                Destinos
-              </Link>
-              <Link 
-                to="/blog" 
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                onClick={handleMobileLinkClick}
-              >
-                Blog
-              </Link>
-              <Link 
-                to="/contato" 
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                onClick={handleMobileLinkClick}
-              >
-                Contato
-              </Link>
-              {isLoggedIn && (
-                <Link 
-                  to="/dashboard" 
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                  onClick={handleMobileLinkClick}
-                >
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4" />
-                    Dashboard
-                  </div>
-                </Link>
+              
+              {/* Menu Mobile para usuários NÃO logados */}
+              {!isLoggedIn && (
+                <>
+                  <Link 
+                    to="/planeje-sonhe" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    Planeje...Sonhe
+                  </Link>
+                  <Link 
+                    to="/destinos" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    Destinos Mais Procurados
+                  </Link>
+                  <Link 
+                    to="/blog" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    Blog
+                  </Link>
+                  <Link 
+                    to="/contato" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    Contato
+                  </Link>
+                </>
               )}
+              
+              {/* Menu Mobile para usuários LOGADOS */}
               {isLoggedIn && (
-                <Link 
-                  to="/profile" 
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-                  onClick={handleMobileLinkClick}
-                >
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    Perfil
-                  </div>
-                </Link>
+                <>
+                  <Link 
+                    to="/destinos" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    Destinos
+                  </Link>
+                  <Link 
+                    to="/blog" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    Blog
+                  </Link>
+                  <Link 
+                    to="/dashboard" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="h-4 w-4" />
+                      Dashboard
+                    </div>
+                  </Link>
+                  <Link 
+                    to="/contato" 
+                    className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                    onClick={handleMobileLinkClick}
+                  >
+                    Contato
+                  </Link>
+                </>
               )}
               
               {/* Mobile Auth Button */}

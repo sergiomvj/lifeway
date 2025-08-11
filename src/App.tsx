@@ -19,6 +19,7 @@ import FerramentasIndex from "./pages/ferramentas/index";
 import DestinosIndex from "./pages/destinos/index";
 import ComparativoCidades from "./pages/destinos/comparativo";
 import Cities from "./pages/Cities";
+import PlanejeSonhe from "./pages/PlanejeSonhe";
 import BlogIndex from "./pages/blog/index";
 import Contato from "./pages/Contato";
 import NotFound from "./pages/NotFound";
@@ -55,6 +56,7 @@ const App = () => (
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/planeje-sonhe" element={<PlanejeSonhe />} />
                 <Route path="/dreams" element={<Dreams />} />
                 <Route path="/visamatch" element={<VisaMatch />} />
                 <Route path="/especialista" element={<Especialista />} />
