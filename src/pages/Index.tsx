@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Users, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { getFamilyImageUrl } from '@/utils';
+import { getRandomFamilyImageUrl } from '@/utils';
 import Navbar from "@/components/Navbar";
 import ToolsSection from "@/components/ToolsSection";
 import Footer from "@/components/Footer";
@@ -10,31 +10,9 @@ import Footer from "@/components/Footer";
 const Index = () => {
   const [backgroundImage, setBackgroundImage] = useState('');
 
-  // Lista de imagens da pasta family
-  const familyImages = [
-    'arto-suraj-VTDd6VP7Dps-unsplash.jpg',
-    'daria-trofimova--c_Slf2pWtk-unsplash.jpg',
-    'daria-trofimova-T-qNefXNUGw-unsplash.jpg',
-    'derek-owens-cmzlFICyL6Y-unsplash.jpg',
-    'dimas-rizki-pratama-etsWwWpzOiM-unsplash.jpg',
-    'dmitry-rodionov-3NeRr1t1wwc-unsplash.jpg',
-    'hoi-an-photographer-SVt5gv8xbKM-unsplash (1).jpg',
-    'javier-gonzalez-fotografo-ScnyD7znFTk-unsplash.jpg',
-    'kateryna-hliznitsova-N_6OpdOXcxo-unsplash.jpg',
-    'lashawn-dobbs-xTcS9bZLu_8-unsplash.jpg',
-    'nilanka-kariyawasam-AKk37Avu6o8-unsplash.jpg',
-    'noor-vasquez-photo-6pXtLvo-lXs-unsplash.jpg',
-    'richard-sagredo-FDJi2t7VWy0-unsplash.jpg',
-    'samuel-yongbo-kwon-F4bA_QiMK6U-unsplash.jpg',
-    'sourav-debnath-vAFEBbGvwgw-unsplash.jpg',
-    'thay-jesus-7qrFkW3pgAg-unsplash.jpg'
-  ];
-
   useEffect(() => {
-    // Selecionar uma imagem aleatória
-    const randomIndex = Math.floor(Math.random() * familyImages.length);
-    const selectedImage = familyImages[randomIndex];
-    setBackgroundImage(getFamilyImageUrl(selectedImage));
+    // Usar a imagem fixa definida em getRandomFamilyImageUrl
+    setBackgroundImage(getRandomFamilyImageUrl());
   }, []);
 
   return (
