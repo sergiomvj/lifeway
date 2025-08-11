@@ -3,6 +3,7 @@ import { Heart, Sparkles, FileText, MessageCircle, ArrowRight } from 'lucide-rea
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 const PlanejeSonhe = () => {
   return (
@@ -10,26 +11,25 @@ const PlanejeSonhe = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center mb-6">
-            <Sparkles className="w-12 h-12 mr-4" />
-            <h1 className="text-4xl md:text-6xl font-bold">
+        <div className="relative max-w-7xl mx-auto text-center py-16 px-4">
+          <div className="flex items-center justify-center mb-4">
+            <Sparkles className="w-10 h-10 md:w-12 md:h-12 mr-3 md:mr-4" />
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold">
               Planeje...Sonhe
             </h1>
           </div>
-          <p className="text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
             Recursos exclusivos para você simular cenários e antever o que pode acontecer na sua vida se imigrar para os EUA
           </p>
         </div>
       </div>
 
       {/* Video Section */}
-      <div className="w-full bg-gray-100 pt-0 pb-12">
-        <div className="container mx-auto px-4 pt-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+      <div className="w-full bg-gray-100 pb-0">
+        <div className="w-full">
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
               <iframe
                 className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
                 src="https://www.youtube.com/embed/xPYaP7d_FWo"
@@ -41,37 +41,31 @@ const PlanejeSonhe = () => {
             </div>
           </div>
         </div>
-      </div>
 
       {/* Cards Section */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-4 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           
           {/* Card 1 - Criador de Sonhos */}
           <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-500">
-            <CardHeader className="text-center pb-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <CardHeader className="text-center pb-1">
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                 <Heart className="w-8 h-8 text-white" />
               </div>
               <CardTitle className="text-2xl font-bold text-gray-800">
                 Criador de Sonhos
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-center">
+            <CardContent className="text-center px-6">
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Como seria a sua vida daqui há 5 anos se você imigrasse para os EUA? 
-                Simular isso gratuitamente baseado na sua realidade te parece interessante? 
-                Então clique no botão abaixo e descubra.
+                Que tal simular como seria a experiência de viver nos Estados Unidos? 
+                Vida pessoal, profissional, acadêmica e todas as possibilidades que se abririam.
               </p>
-              <Button 
-                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 group-hover:scale-105"
-                onClick={() => {
-                  // Implementar navegação ou modal
-                  alert('Criador de Sonhos - Em breve!');
-                }}
-              >
-                Criar Meu Sonho
-                <ArrowRight className="w-5 h-5 ml-2" />
+              <Button asChild className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 group-hover:scale-105">
+                <Link to="/dreams">
+                  Criar Meu Sonho
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -91,15 +85,11 @@ const PlanejeSonhe = () => {
                 Você gostaria de morar nos EUA mas não sabe qual o melhor tipo de visto para você? 
                 Se isso é algo que você gostaria de saber gratuitamente clique no link abaixo.
               </p>
-              <Button 
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 group-hover:scale-105"
-                onClick={() => {
-                  // Implementar navegação ou modal
-                  alert('VisaMatch - Em breve!');
-                }}
-              >
-                Descobrir Meu Visto
-                <ArrowRight className="w-5 h-5 ml-2" />
+              <Button asChild className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 group-hover:scale-105">
+                <Link to="/visamatch">
+                  Encontrar Meu Visto
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -119,15 +109,11 @@ const PlanejeSonhe = () => {
                 E se você tivesse alguém disposto a te dar gratuitamente todas as informações sobre como obter um visto americano? 
                 Se isso seria bom para você clique no link abaixo.
               </p>
-              <Button 
-                className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 group-hover:scale-105"
-                onClick={() => {
-                  // Implementar navegação ou modal
-                  alert('Especialista Virtual - Em breve!');
-                }}
-              >
-                Falar com Especialista
-                <ArrowRight className="w-5 h-5 ml-2" />
+              <Button asChild className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 group-hover:scale-105">
+                <Link to="/especialista">
+                  Falar com Especialista
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
               </Button>
             </CardContent>
           </Card>

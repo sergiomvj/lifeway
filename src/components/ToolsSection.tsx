@@ -1,31 +1,31 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle, Clock, Users, Heart, Calculator, Briefcase, MessageCircle } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, Users, Heart, Calculator, Briefcase, MessageCircle, Sparkles, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ToolsSection = () => {
   const ferramentasDisponiveis = [
     {
       titulo: "Criador de Sonhos",
-      descricao: "Defina seus objetivos e trace o caminho ideal para alcançá-los",
-      icone: Heart,
+      descricao: "Como seria a sua vida daqui há 5 anos se você imigrasse para os EUA? Simular isso gratuitamente baseado na sua realidade te parece interessante? Então clique no botão abaixo e descubra.",
+      icone: Sparkles,
       link: "/dreams",
-      cor: "text-red-500"
+      bgImage: "/storage/images/maincities/a8064db4-085c-45a3-9e58-4811fafbc7da.jpg"
     },
     {
       titulo: "VisaMatch",
-      descricao: "Análise inteligente para descobrir o visto ideal para seu perfil",
-      icone: CheckCircle,
+      descricao: "Você gostaria de morar nos EUA mas não sabe qual o melhor tipo de visto para você? Se isso é algo que você gostaria de saber gratuitamente clique no link abaixo.",
+      icone: FileText,
       link: "/visamatch",
-      cor: "text-green-500"
+      bgImage: "/storage/images/maincities/009ad6d2-23f0-437e-8163-7370009e7d1b.jpg"
     },
     {
       titulo: "Especialista de Plantão",
-      descricao: "Chat com nossa IA especializada em imigração americana",
+      descricao: "Tire suas dúvidas em tempo real com nosso especialista virtual em imigração americana. Respostas rápidas e precisas para suas principais questões sobre vistos e imigração.",
       icone: MessageCircle,
       link: "/especialista",
-      cor: "text-blue-500"
+      bgImage: "/storage/images/maincities/30a06bff-8da0-4049-a87e-ccf3ccbbf047.jpg"
     }
   ];
 
@@ -39,37 +39,46 @@ const ToolsSection = () => {
   ];
 
   return (
-    <section id="ferramentas" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Ferramentas Disponíveis */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Ferramentas Disponíveis
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Utilize nossas ferramentas especializadas para planejar sua jornada para os Estados Unidos
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
+    <section id="ferramentas" className="bg-white -mt-16 relative z-20 pt-[10px] md:pt-[10px]">
+      <div className="container mx-auto px-2 sm:px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
           {ferramentasDisponiveis.map((ferramenta, index) => {
             const IconComponent = ferramenta.icone;
             return (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center ${ferramenta.cor}`}>
-                    <IconComponent className="w-8 h-8" />
+              <Card 
+                key={index} 
+                className="group relative overflow-hidden h-full min-h-[380px] flex flex-col border-2 hover:border-blue-500 transition-all duration-300 shadow-lg pt-[5px] md:pt-[10px]"
+              >
+                {/* Imagem de fundo com overlay */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center z-0 transition-transform duration-500 group-hover:scale-110"
+                  style={{ 
+                    backgroundImage: `url(${ferramenta.bgImage})`,
+                  }}
+                >
+                  <div className="absolute inset-0 bg-purple-700/85"></div>
+                </div>
+                
+                <CardHeader className="relative z-10 text-center pt-8 pb-4">
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                    <IconComponent className="w-8 h-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl">{ferramenta.titulo}</CardTitle>
-                  <CardDescription className="text-gray-600">
-                    {ferramenta.descricao}
-                  </CardDescription>
+                  <CardTitle className="text-2xl font-bold text-white">
+                    {ferramenta.titulo}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center">
-                  <Button asChild className="w-full">
+                
+                <CardContent className="relative z-10 flex-grow flex flex-col">
+                  <p className="text-white/90 mb-6 leading-relaxed flex-grow">
+                    {ferramenta.descricao}
+                  </p>
+                  <Button 
+                    asChild 
+                    className="w-full bg-white text-purple-700 hover:bg-gray-100 font-semibold py-3 rounded-lg transition-all duration-300 group-hover:scale-105"
+                  >
                     <Link to={ferramenta.link}>
-                      Usar Ferramenta
-                      <ArrowRight className="ml-2 w-4 h-4" />
+                      {ferramenta.titulo.includes('Sonhos') ? 'Criar Meu Sonho' : ferramenta.titulo.includes('VisaMatch') ? 'Descobrir Meu Visto' : 'Falar com Especialista'}
+                      <ArrowRight className="w-5 h-5 ml-2" />
                     </Link>
                   </Button>
                 </CardContent>
@@ -78,32 +87,43 @@ const ToolsSection = () => {
           })}
         </div>
 
-        {/* Ferramentas Futuras */}
-        <div className="text-center mb-12">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
-            Próximas Ferramentas
-          </h3>
-          <p className="text-gray-600 mb-8">
-            Estamos desenvolvendo ainda mais ferramentas para facilitar sua jornada
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {ferramentasFuturas.map((ferramenta, index) => {
-            const IconComponent = ferramenta.icone;
-            return (
-              <Link key={index} to={ferramenta.link} className="block">
-                <div className="text-center p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all">
-                  <IconComponent className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p className="text-sm font-medium text-gray-600">{ferramenta.titulo}</p>
-                  <Badge variant="secondary" className="mt-2">
-                    <Clock className="w-3 h-3 mr-1" />
+        {/* Seção de Ferramentas Futuras */}
+        <div className="mt-16">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              Próximas Ferramentas
+            </h3>
+            <p className="text-gray-600">
+              Estamos desenvolvendo ainda mais ferramentas para facilitar sua jornada
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
+            {ferramentasFuturas.map((ferramenta, index) => {
+              const IconComponent = ferramenta.icone;
+              return (
+                <Link 
+                  key={index} 
+                  to={ferramenta.link} 
+                  className="block group"
+                >
+                  <div className="h-full p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-all text-center hover:border-blue-500">
+                    <IconComponent className="w-8 h-8 mx-auto mb-2 text-purple-600 group-hover:text-purple-700 transition-colors" />
+                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                      {ferramenta.titulo}
+                    </p>
+                    <Badge 
+                      variant="outline" 
+                      className="mt-2 text-xs bg-white/50 backdrop-blur-sm border-purple-200 text-purple-700 group-hover:border-purple-300 group-hover:bg-white/70"
+                    >
+                      <Clock className="w-3 h-3 mr-1" />
                     Em breve
                   </Badge>
-                </div>
-              </Link>
-            );
-          })}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

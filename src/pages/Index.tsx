@@ -20,7 +20,7 @@ const Index = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         {backgroundImage && (
           <div 
@@ -30,7 +30,7 @@ const Index = () => {
         )}
         {/* Overlay azul petróleo com 85% de opacidade */}
         <div className="absolute inset-0 bg-petroleo/85" />
-        <div className="relative z-10 container mx-auto px-4 text-center text-white">
+        <div className="relative z-10 container mx-auto px-4 text-center text-white pb-4 md:pb-8">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Planeje sua jornada<br />
             <span className="text-blue-200">rumo aos Estados Unidos</span>
