@@ -26,17 +26,8 @@ const PlanejeSonhe = () => {
       </div>
 
       {/* Video Section */}
-      <div className="w-full bg-gray-100 py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Veja como transformar seus sonhos em realidade
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Descubra estratégias comprovadas e histórias inspiradoras de quem já realizou o sonho americano
-            </p>
-          </div>
-          
+      <div className="w-full bg-gray-100 pt-0 pb-12">
+        <div className="container mx-auto px-4 pt-8">
           <div className="max-w-4xl mx-auto">
             <div className="relative w-full" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
               <iframe
