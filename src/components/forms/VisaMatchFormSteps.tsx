@@ -14,9 +14,17 @@ export interface VisaMatchFormData {
   goals_info: Partial<GoalsInfo>;
 }
 
+interface StepProps {
+  formData: any;
+  updateFormData: (field: string, value: any) => void;
+  getFieldState: (field: string) => any;
+  getValidationSuggestions: (field: string) => string[];
+  validationSummary: any;
+}
+
 // Componente para a primeira etapa - Objetivo
 const VisaMatchStep1 = () => {
-  const { control, watch } = useFormContext<VisaMatchFormData>();
+  const { control, watch } = useFormContext<any>();
   const purpose = watch('travel_info.purpose');
 
   return (
@@ -78,8 +86,8 @@ const VisaMatchStep1 = () => {
 };
 
 // Componente para a segunda etapa - Formação e Experiência
-const VisaMatchStep2 = () => {
-  const { control } = useFormContext<VisaMatchFormData>();
+const VisaMatchStep3 = () => {
+  const { control } = useFormContext<any>();
 
   return (
     <Card className="border-0 shadow-none">
@@ -93,7 +101,7 @@ const VisaMatchStep2 = () => {
           render={({ field }) => (
             <FormItem>
               <Label>Qual é o seu nível de educação?</Label>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value as string}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione sua formação" />
@@ -163,8 +171,8 @@ const VisaMatchStep2 = () => {
 };
 
 // Componente para a terceira etapa - Oferta de Emprego
-const VisaMatchStep3 = () => {
-  const { control, watch } = useFormContext<VisaMatchFormData>();
+const VisaMatchStep2 = () => {
+  const { control, watch } = useFormContext<any>();
   const hasJobOffer = watch('travel_info.has_job_offer');
 
   return (
@@ -253,8 +261,8 @@ const VisaMatchStep3 = () => {
 
 // Componente para a quarta etapa - Investimento e Prazo
 const VisaMatchStep4 = () => {
-  const { control, watch } = useFormContext<VisaMatchFormData>();
-  const purpose = watch('purpose');
+  const { control, watch } = useFormContext<any>();
+  const purpose = watch("purpose" as any);
 
   return (
     <Card className="border-0 shadow-none">

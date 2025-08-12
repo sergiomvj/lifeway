@@ -29,9 +29,7 @@ import NotFound from "./pages/NotFound";
 import { FavoriteCitiesProvider } from "./contexts/FavoriteCitiesContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { UserProvider } from "./contexts/UserContext";
-import { AuthTest } from "./components/test/AuthTest";
-import { EnvTest } from "./components/test/EnvTest";
-import { SupabaseTest } from "./components/test/SupabaseTest";
+// Componentes de teste removidos
 
 // Lazy load ferramenta pages
 const CalcwayPage = lazy(() => import('./pages/ferramentas/calcway/index'));
@@ -118,9 +116,7 @@ const App = () => (
                 <Route path="/cities" element={<Cities />} />
                 <Route path="/blog" element={<BlogIndex />} />
                 <Route path="/contato" element={<Contato />} />
-                <Route path="/test/auth" element={<AuthTest />} />
-                <Route path="/test/env" element={<EnvTest />} />
-                <Route path="/test/supabase" element={<SupabaseTest />} />
+                {/* Rotas de teste removidas */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { useFormPersistence } from '@/hooks/useFormPersistence';
 import { useFormValidation, commonValidationRules } from '@/hooks/useFormValidation';
 import { ValidationRule, AutoSaveConfig, MultistepFormData, FormType, FormStatus } from '@/types/forms';
-import { convertToMultistepForm, convertFromMultistepForm } from '@/lib/formUtils';
+import { convertToMultistepForm, convertFromMultistepForm, createEmptyForm } from '@/lib/formUtils';
 import { useToast } from '@/hooks/use-toast';
 
 export interface FormStep<T> {
@@ -79,13 +79,20 @@ export function MultistepForm<T extends Record<string, any>>({
   const { toast } = useToast();
   
   // Estado para o formulário unificado
-  const [formData, setFormData] = useState<MultistepFormData | T>(
-    // Se os dados iniciais já estiverem no formato MultistepFormData, use-os
-    // Caso contrário, converta do formato antigo para o novo
-    (initialData as MultistepFormData)?.form_type 
-      ? initialData 
-      : convertToMultistepForm(initialData as T, formType as FormType, userId)
-  );
+  const [formData, setFormData] = useState<MultistepFormData | T>(() => {
+    try {
+      // Se os dados iniciais já estiverem no formato MultistepFormData, use-os
+      // Caso contrário, converta do formato antigo para o novo
+      if ((initialData as any)?.form_type) {
+        return initialData as MultistepFormData;
+      } else {
+        return convertToMultistepForm(initialData as any, formType as FormType, userId);
+      }
+    } catch (error) {
+      console.error('Erro ao inicializar formData:', error);
+      return createEmptyForm(formType as FormType, userId);
+    }
+  });
   
   // Verifica se está usando o novo formato de formulário
   const isNewFormat = useMemo(() => {
@@ -219,7 +226,7 @@ export function MultistepForm<T extends Record<string, any>>({
       // Check required fields
       const fieldRules = validationRules[fieldKey] || [];
       const hasRequiredRule = fieldRules.some(rule => rule.required);
-      if (hasRequiredRule && (!formData[fieldKey] || formData[fieldKey] === '')) {
+      if (hasRequiredRule && (!formData[fieldKey as keyof typeof formData] || formData[fieldKey as keyof typeof formData] === '')) {
         isValid = false;
         break;
       }
@@ -247,7 +254,7 @@ export function MultistepForm<T extends Record<string, any>>({
       // Mark current step as completed
       setCompletedSteps(prev => new Set([...prev, currentStep]));
 
-      onStepChange?.(nextStep, formData);
+      onStepChange?.(nextStep, formData as any);
     }
   }, [currentStep, steps.length, formData, onStepChange, validateCurrentStep, toast]);
 
@@ -292,38 +299,23 @@ export function MultistepForm<T extends Record<string, any>>({
         if (autoSaveConfig.storage === 'localStorage' && recordId) {
           localStorage.removeItem(`${autoSaveConfig.key_prefix}_${recordId}`);
         } else if (autoSaveConfig.storage === 'supabase' && tableName && recordId) {
-          return await saveNow();
+          await saveNow();
         }
       }
       
       // Feedback para o usuário
       toast({
-        title: 'Success!',
-        description: 'Seu formulário foi enviado com sucesso.',
+        title: 'Sucesso!',
+        description: 'Formulário enviado com sucesso.',
         variant: 'default'
       });
       
     } catch (error) {
       console.error('Error submitting form:', error);
       
-      // Tenta salvar como rascunho em caso de erro
-      try {
-        if (autoSaveConfig.enabled) {
-          await saveDraft(formData);
-          
-          toast({
-            title: 'Rascunho salvo',
-            description: 'Seu progresso foi salvo como rascunho. Você pode continuar mais tarde.',
-            variant: 'default'
-          });
-        }
-      } catch (saveError) {
-        console.error('Error saving draft after submission error:', saveError);
-      }
-      
       toast({
         title: 'Erro',
-        description: 'Ocorreu um erro ao enviar o formulário. Seu progresso foi salvo como rascunho.',
+        description: 'Ocorreu um erro ao enviar o formulário.',
         variant: 'destructive'
       });
       
@@ -453,7 +445,7 @@ export function MultistepForm<T extends Record<string, any>>({
               className="space-y-6"
             >
               {currentStepData.component({
-                formData: processedFormData,
+                formData: (isNewFormat ? (formData as MultistepFormData).form_data : formData) as any,
                 updateFormData,
                 getFieldState,
                 getValidationSuggestions,

@@ -46,7 +46,7 @@ export const createEmptyForm = (formType: FormType, userId?: string): MultistepF
 };
 
 export const convertToMultistepForm = (
-  formData: CriadorSonhosFormData | VisaMatchFormData,
+  formData: any,
   formType: FormType,
   userId?: string
 ): MultistepFormData => {

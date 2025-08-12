@@ -10,6 +10,7 @@ import { ArrowLeft, CheckCircle, ArrowRight, RotateCcw, FileText, Clock, DollarS
 import { openaiService } from "@/services/openaiService";
 import { supabase } from "@/lib/supabaseClient";
 import { useToast } from "@/hooks/use-toast";
+import { useForm } from 'react-hook-form';
 import { MultistepForm, FormStep } from "@/components/forms/MultistepForm";
 import { VisaMatchFormData, VisaMatchStep1, VisaMatchStep2, VisaMatchStep3, VisaMatchStep4 } from "@/components/forms/VisaMatchFormSteps";
 import { convertToMultistepForm, convertFromMultistepForm } from "@/lib/formUtils";
@@ -42,27 +43,27 @@ const formSteps: FormStep<VisaMatchFormData>[] = [
     id: 'investment_timeline',
     title: 'Investimento e Prazo',
     description: 'Quanto você pode investir e qual seu prazo?',
-    fields: ['financial_info.investment_capacity', 'preferences.timeline'],
+    fields: ['financial_info.investment_capacity', 'preferences.timeline'] as any,
     component: VisaMatchStep4
   }
 ];
 
 // Dados iniciais do formulário
-const initialFormData: VisaMatchFormData = {
+const initialFormData: any = {
   travel_info: {
-    purpose: 'tourism', // tourism, work, study, investment, other
+    purpose: 'other' as any, // tourism, work, study, investment, other
     has_job_offer: false,
     job_offer_details: {
       position: '',
       company: '',
       salary: 0,
       start_date: ''
-    },
+    } as any,
     family_in_us: false,
     family_details: []
   },
   professional_info: {
-    education_level: 'high_school', // high_school, bachelors, masters, phd, other
+    education_level: 'bachelor' as any, // high_school, bachelors, masters, phd, other
     years_of_experience: 0,
     current_occupation: '',
     has_us_education: false,
@@ -123,6 +124,10 @@ const VisaMatch = ({ formId: propFormId }: VisaMatchProps) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [visitedSteps, setVisitedSteps] = useState<Set<number>>(new Set([0]));
   
+  const form = useForm<any>({
+    defaultValues: initialFormData
+  });
+
   // Carregar dados do formulário existente se formId for fornecido
   useEffect(() => {
     const loadFormData = async () => {
@@ -250,7 +255,7 @@ const VisaMatch = ({ formId: propFormId }: VisaMatchProps) => {
     }
   ];
 
-  const handleFormSubmit = async (formData: VisaMatchFormData) => {
+  const handleFormSubmit = async (data: any) => {
     if (!userId) {
       toast({
         title: "Erro de autenticação",
@@ -264,7 +269,7 @@ const VisaMatch = ({ formId: propFormId }: VisaMatchProps) => {
       setIsSubmitting(true);
       
       // Converter os dados para o formato MultistepFormData
-      const newFormData = convertToMultistepForm(formData, 'visa', userId);
+      const newFormData = convertToMultistepForm(data as any, 'visa', userId);
       
       // Preparar os dados para salvar no Supabase
       const formToSave = {
@@ -281,7 +286,7 @@ const VisaMatch = ({ formId: propFormId }: VisaMatchProps) => {
       };
       
       // Salvar no Supabase
-      const { data, error } = await supabase
+      const { data: savedData, error } = await supabase
         .from('multistep_forms')
         .upsert([
           formId ? { ...formToSave, id: formId } : formToSave
@@ -292,7 +297,7 @@ const VisaMatch = ({ formId: propFormId }: VisaMatchProps) => {
       if (error) throw error;
       
       // Gerar recomendações
-      await calculateRecommendations(formData, data.id);
+      await calculateRecommendations(data, savedData.id);
       
       // Atualizar o ID do formulário se for uma nova criação
       if (!formId) {

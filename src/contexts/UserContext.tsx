@@ -27,11 +27,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(true);
       const response = await userContextService.getContext(userId);
       if (response) {
-        setContext(response.context);
+        setContext(response.context as any);
       } else {
         // Create initial context if it doesn't exist
         const newContext = await userContextService.createContext(userId, {});
-        setContext(newContext);
+        setContext(newContext as any);
       }
       setError(null);
     } catch (err) {
@@ -106,7 +106,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <UserContext.Provider value={contextValue}>
+    <UserContext.Provider value={contextValue as any}>
       {children}
     </UserContext.Provider>
   );
