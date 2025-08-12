@@ -1,15 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import UserContextManager from '@/components/UserContextManager';
-import FavoriteCitiesSection from '@/components/FavoriteCitiesSection';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
-  Info, 
-  BarChart3, 
   User, 
   Stars, 
   Compass, 
@@ -17,239 +13,347 @@ import {
   ArrowRight,
   CheckCircle,
   Construction,
-  MapPin
+  MapPin,
+  Clock,
+  Settings,
+  TrendingUp,
+  Target,
+  Calendar,
+  Heart,
+  ExternalLink
 } from 'lucide-react';
-import { useUserContext } from '@/hooks/useUserContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useProfile';
+import { useFavoriteCities } from '@/contexts';
 
 const Dashboard = () => {
-  const {
-    context,
-    hasContext,
-    isLoading,
-    completenessScore
-  } = useUserContext();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { hasProfile: hasCompletedProfile, isLoading: profileLoading } = useProfile();
+  const { favoriteCities, isLoading: favoritesLoading } = useFavoriteCities();
 
-  // Verificar se o perfil está completo (nome preenchido como indicador básico)
-  const hasCompletedProfile = context?.profile?.name && context.profile.name.length > 0;
+  // Mock data para ferramentas - em produção, isso viria do banco de dados
+  const toolsUsed = []; // Ferramentas já utilizadas
+  const lastUpdate = new Date().toLocaleDateString('pt-BR');
+
+  const handleProfileClick = () => {
+    if (!hasCompletedProfile) {
+      // Se perfil não está completo, vai para o MultistepForm (cadastro completo)
+      navigate('/multistep-form');
+    } else {
+      // Se perfil está completo, vai para Timeline das Ferramentas
+      navigate('/timeline-ferramentas');
+    }
+  };
+
+  const handleToolClick = (toolPath: string) => {
+    if (!hasCompletedProfile) {
+      // Redireciona para o MultistepForm se o perfil não estiver completo
+      navigate('/multistep-form');
+    } else {
+      // Se o perfil estiver completo, vai direto para a ferramenta
+      navigate(toolPath);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                <BarChart3 className="h-8 w-8 text-blue-600" />
-                Dashboard
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Acompanhe seu progresso na jornada de imigração para os EUA
-              </p>
-            </div>
+        {/* Seção: Seu Caminho LifewayUSA */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Seu Caminho LifewayUSA
+            </h1>
+            <p className="text-xl text-gray-600">
+              Passo a passo para você simular sua experiência de viver nos EUA
+            </p>
+          </div>
+
+          {/* Duas caixas principais */}
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
+            {/* Caixa 1 - Construa seu perfil */}
+            <Card className="bg-petroleo border-0 text-white">
+              <CardContent className="p-8">
+                <div className="flex items-center mb-6">
+                  <User className="h-8 w-8 mr-3" />
+                  <div>
+                    <h3 className="text-xl font-bold">
+                      Construa seu perfil pessoal com maior número de detalhes possível
+                    </h3>
+                  </div>
+                </div>
+                <Button 
+                  onClick={handleProfileClick}
+                  className="bg-black text-white hover:bg-gray-800 w-full md:w-auto"
+                >
+                  Seu Progresso
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Caixa 2 - Ferramentas */}
+            <Card className="bg-teal-600 border-0 text-white">
+              <CardContent className="p-8">
+                <div className="flex items-center mb-6">
+                  <Target className="h-8 w-8 mr-3" />
+                  <div>
+                    <h3 className="text-xl font-bold">
+                      Clique nas ferramentas abaixo para gerar o relatório baseado no seu perfil
+                    </h3>
+                  </div>
+                </div>
+                <div className="flex items-center text-white/90">
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  <span>Ferramentas personalizadas disponíveis</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-        {/* Informações sobre o Dashboard */}
-        <Alert className="mb-8 border-blue-200 bg-blue-50">
-          <Info className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-800">
-            <strong>Bem-vindo ao seu Dashboard:</strong> Aqui você encontra todas as ferramentas 
-            disponíveis para planejar sua jornada de imigração. Explore as opções abaixo para começar.
-          </AlertDescription>
-        </Alert>
-
-        {/* Cards principais */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Card de Perfil */}
-          <Card className="overflow-hidden border-t-4 border-t-blue-500">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-blue-500" />
-                Seu Perfil
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <p className="text-sm text-gray-500">Carregando informações...</p>
-              ) : hasCompletedProfile ? (
-                <div className="space-y-3">
-                  <p className="text-sm">Olá, <span className="font-semibold">{context?.profile.name}</span>!</p>
-                  <p className="text-sm text-gray-600">Seu perfil está {completenessScore}% completo.</p>
-                </div>
-              ) : (
-                <p className="text-sm text-gray-600">Clique aqui e crie o seu perfil para usar ferramentas gratuitas</p>
-              )}
-            </CardContent>
-            <CardFooter className="pt-0">
-              {hasCompletedProfile ? (
-                <Button asChild variant="outline" size="sm" className="w-full">
-                  <Link to="/profile">
-                    Ver Detalhes
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              ) : (
-                <Button asChild className="w-full">
-                  <Link to="/profile">
-                    Criar Perfil
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-
-          {/* Card do Criador de Sonhos */}
-          <Card className="overflow-hidden border-t-4 border-t-purple-500">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <Stars className="h-5 w-5 text-purple-500" />
-                Criador de Sonhos
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Defina seus objetivos e crie um plano personalizado para realizar seu sonho americano.
-              </p>
-            </CardContent>
-            <CardFooter className="pt-0">
-              <Button asChild variant="outline" size="sm" className="w-full">
-                <Link to="/dreams">
-                  Acessar
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-
-          {/* Card do VisaMatch */}
-          <Card className="overflow-hidden border-t-4 border-t-green-500">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <Compass className="h-5 w-5 text-green-500" />
-                VisaMatch
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Descubra qual visto americano é mais adequado para o seu perfil e objetivos.
-              </p>
-            </CardContent>
-            <CardFooter className="pt-0">
-              <Button asChild variant="outline" size="sm" className="w-full">
-                <Link to="/visamatch">
-                  Acessar
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-
-          {/* Card de Ferramentas em Desenvolvimento */}
-          <Card className="overflow-hidden border-t-4 border-t-amber-500">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <Construction className="h-5 w-5 text-amber-500" />
-                Em Desenvolvimento
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600">
-                Novas ferramentas estão sendo desenvolvidas para melhorar sua experiência.
-              </p>
-            </CardContent>
-            <CardFooter className="pt-0">
-              <div className="w-full bg-gray-100 rounded-md p-2 text-center text-sm text-gray-500">
-                Em breve
-              </div>
-            </CardFooter>
-          </Card>
-        </div>
-
-        {/* Seção de cidades favoritas */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-red-500" />
-            Seus Destinos
+        {/* Cards das Ferramentas */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            Ferramentas Disponíveis
           </h2>
-          
-          <FavoriteCitiesSection />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Criador de Sonho */}
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleToolClick('/dreams')}>
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <Sparkles className="h-8 w-8 text-blue-600" />
+                </div>
+                <CardTitle className="text-lg">Criador de Sonho</CardTitle>
+                <CardDescription>
+                  Visualize seu futuro nos EUA
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            {/* Visamatch */}
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleToolClick('/visamatch')}>
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <Compass className="h-8 w-8 text-green-600" />
+                </div>
+                <CardTitle className="text-lg">Visamatch</CardTitle>
+                <CardDescription>
+                  Encontre o visto ideal para você
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            {/* Especialista */}
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleToolClick('/especialista')}>
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                  <Stars className="h-8 w-8 text-purple-600" />
+                </div>
+                <CardTitle className="text-lg">LIA - LifeWay Intelligent Assistant</CardTitle>
+                <CardDescription>
+                  Consultoria personalizada
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            {/* Em Desenvolvimento */}
+            <Card className="hover:shadow-lg transition-shadow opacity-75">
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <Construction className="h-8 w-8 text-gray-600" />
+                </div>
+                <CardTitle className="text-lg">Em Desenvolvimento</CardTitle>
+                <CardDescription>
+                  Novas ferramentas em breve
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
         </div>
 
-        {/* Informações Adicionais */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Seções Inferiores */}
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Acessar o seu perfil */}
+          <Card className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-center mb-2">
+                <Settings className="h-6 w-6 text-blue-600 mr-2" />
+                <CardTitle className="text-lg">Acessar o seu perfil</CardTitle>
+              </div>
+              <CardDescription>
+                Altere ou adicione informações ao seu perfil
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => navigate('/perfil')}
+                variant="outline" 
+                className="w-full"
+              >
+                Gerenciar Perfil
+                <User className="ml-2 h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Timeline das Ferramentas */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Recursos Disponíveis</CardTitle>
+              <div className="flex items-center mb-2">
+                <Clock className="h-6 w-6 text-green-600 mr-2" />
+                <CardTitle className="text-lg">Timeline das Ferramentas</CardTitle>
+              </div>
+              <CardDescription>
+                Acompanhe seu progresso
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-medium">Chat com Especialista</p>
-                  <p className="text-sm text-gray-600">Tire suas dúvidas com nosso especialista em imigração</p>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Criador de Sonho</span>
+                  <CheckCircle className="h-4 w-4 text-gray-300" />
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-medium">Análise de Perfil</p>
-                  <p className="text-sm text-gray-600">Avaliação personalizada das suas chances de imigração</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Visamatch</span>
+                  <CheckCircle className="h-4 w-4 text-gray-300" />
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-medium">Plano de Ação</p>
-                  <p className="text-sm text-gray-600">Passos concretos para alcançar seus objetivos</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Especialista</span>
+                  <CheckCircle className="h-4 w-4 text-gray-300" />
+                </div>
+                <div className="text-xs text-gray-500 mt-4">
+                  Última atualização: {lastUpdate}
                 </div>
               </div>
             </CardContent>
           </Card>
 
+          {/* Novos Passos */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Próximos Passos</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-gray-600">
-                Para aproveitar ao máximo a plataforma, recomendamos seguir estes passos:
-              </p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 text-xs font-bold">1</span>
-                  </div>
-                  <p className="text-sm">Complete seu perfil com todas as informações</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 text-xs font-bold">2</span>
-                  </div>
-                  <p className="text-sm">Use o VisaMatch para identificar o visto ideal</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 text-xs font-bold">3</span>
-                  </div>
-                  <p className="text-sm">Crie seu plano de ação com o Criador de Sonhos</p>
-                </div>
+              <div className="flex items-center mb-2">
+                <TrendingUp className="h-6 w-6 text-purple-600 mr-2" />
+                <CardTitle className="text-lg">Novos Passos</CardTitle>
               </div>
-              <Button asChild className="w-full mt-2">
-                <Link to="/especialista">
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Falar com Especialista
-                </Link>
-              </Button>
+              <CardDescription>
+                Sugestões do que fazer a seguir
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {!hasCompletedProfile ? (
+                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800 font-medium">
+                      Complete seu perfil primeiro
+                    </p>
+                    <p className="text-xs text-yellow-600 mt-1">
+                      Preencha todas as informações para ter acesso completo às ferramentas
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 text-blue-600 mr-2" />
+                      <span className="text-sm">Agende uma consultoria</span>
+                    </div>
+                    <div className="flex items-center">
+                      <MapPin className="h-4 w-4 text-green-600 mr-2" />
+                      <span className="text-sm">Explore destinos</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Cidades Favoritas */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center mb-2">
+                <Heart className="h-6 w-6 text-red-500 mr-2" />
+                <CardTitle className="text-lg">Cidades Favoritas</CardTitle>
+              </div>
+              <CardDescription>
+                Suas cidades de interesse nos EUA
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {favoritesLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-petroleo"></div>
+                  <span className="ml-2 text-sm text-gray-600">Carregando...</span>
+                </div>
+              ) : favoriteCities.length > 0 ? (
+                <div className="space-y-3">
+                  {favoriteCities.slice(0, 3).map((favorite) => (
+                    <div 
+                      key={favorite.id}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                      onClick={() => navigate(`/destinos/cidade/${favorite.city_id}`)}
+                    >
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 text-petroleo mr-2" />
+                        <div>
+                          <span className="text-sm font-medium text-gray-900">
+                            {favorite.city_name}
+                          </span>
+                          {favorite.city_state && (
+                            <Badge variant="secondary" className="ml-2 text-xs">
+                              {favorite.city_state}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-gray-400" />
+                    </div>
+                  ))}
+                  
+                  {favoriteCities.length > 3 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigate('/destinos')}
+                      className="w-full mt-2 text-petroleo hover:text-lilas"
+                    >
+                      Ver todas as {favoriteCities.length} cidades favoritas
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  )}
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate('/destinos')}
+                    className="w-full mt-2"
+                  >
+                    Explorar mais destinos
+                    <Compass className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="text-center py-6">
+                  <Heart className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-sm text-gray-600 mb-3">
+                    Você ainda não favoritou nenhuma cidade
+                  </p>
+                  <Button
+                    onClick={() => navigate('/destinos')}
+                    className="bg-petroleo hover:bg-lilas text-white"
+                  >
+                    Descobrir destinos
+                    <Compass className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );

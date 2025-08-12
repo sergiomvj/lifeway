@@ -21,42 +21,44 @@ const Login = () => {
   const location = useLocation();
   const { toast } = useToast();
 
-  // Get the redirect path from location state or default to home
-  const from = location.state?.from?.pathname || '/';
-
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       if (isLogin) {
-        // Login
         const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+          email: email.trim(),
+          password: password.trim(),
         });
 
         if (error) throw error;
 
         toast({
           title: "Login realizado com sucesso!",
-          description: "Bem-vindo de volta ao LifeWayUSA.",
+          description: "Redirecionando...",
         });
-
-        // Redirect to the page the user was trying to access, or home if none
-        navigate(from);
+        
+        // Simples redirecionamento após login
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
       } else {
-        // Cadastro
         if (password !== confirmPassword) {
           throw new Error('As senhas não coincidem');
         }
 
         const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
+          email: email.trim(),
+          password: password.trim(),
         });
 
         if (error) throw error;
+
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setIsLogin(true);
 
         toast({
           title: "Conta criada com sucesso!",
@@ -66,7 +68,7 @@ const Login = () => {
     } catch (error: any) {
       toast({
         title: "Erro na autenticação",
-        description: error.message || "Ocorreu um erro inesperado.",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -79,15 +81,15 @@ const Login = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}${from}`
-        }
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
       });
 
       if (error) throw error;
     } catch (error: any) {
       toast({
         title: "Erro no login com Google",
-        description: error.message || "Ocorreu um erro inesperado.",
+        description: error.message,
         variant: "destructive",
       });
     }
@@ -97,17 +99,8 @@ const Login = () => {
     navigate('/');
   };
 
-  // If user is already logged in, redirect them
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        navigate(from);
-      }
-    };
-    
-    checkAuth();
-  }, [navigate, from]);
+  // Não precisamos mais deste useEffect, pois o ProtectedRoute já lida com o redirecionamento
+  // e o listener de autenticação no AuthContext vai cuidar de atualizar o estado
 
   return (
     <div className="min-h-screen bg-background">

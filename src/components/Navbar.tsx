@@ -1,16 +1,33 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Heart, BarChart3, LogOut, User, Menu, X } from "lucide-react";
-import { useUserContext } from "@/hooks/useUserContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, userContext, isLoading } = useUserContext();
-
+  const { user, isLoading } = useAuth();
+  const queryClient = useQueryClient();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Adiciona um listener para mudanças de autenticação
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event);
+      // Invalida as queries relacionadas ao usuário para forçar atualização
+      await queryClient.invalidateQueries({ queryKey: ['userContext'] });
+    });
+
+    return () => {
+      // Remove o listener quando o componente é desmontado
+      if (authListener?.subscription) {
+        authListener.subscription.unsubscribe();
+      }
+    };
+  }, [queryClient]);
 
   const handleFerramentasClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -28,19 +45,38 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
+      console.log('Iniciando processo de logout...');
+      
+      // Limpar cache do React Query primeiro
+      await queryClient.clear();
+      
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Erro ao fazer logout:', error);
-        return;
+        // Mesmo com erro, tentar limpar o estado local
       }
       
-      // Fechar menu mobile e redirecionar para home após logout
+      console.log('Logout realizado com sucesso');
+      
+      // Fechar menu mobile
       setIsMobileMenuOpen(false);
+      
+      // Limpar localStorage se houver dados relacionados ao usuário
+      localStorage.removeItem('supabase.auth.token');
+      
+      // Redirecionar para home
       navigate('/');
-      // Forçar recarregamento da página para garantir que o estado de autenticação seja atualizado
-      window.location.reload();
+      
+      // Forçar recarregamento da página para garantir limpeza completa do estado
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+      
     } catch (error) {
       console.error('Erro inesperado ao fazer logout:', error);
+      // Em caso de erro, ainda tentar redirecionar
+      navigate('/');
+      window.location.reload();
     }
   };
 
@@ -51,7 +87,7 @@ const Navbar = () => {
   // Verificar se o usuário está logado
   // Usando a verificação do objeto user do Supabase para maior consistência
   // Adicionando console.log para debug
-  console.log('Auth status:', { user, userContext, isLoading });
+  console.log('Auth status:', { user, isLoading });
   const isLoggedIn = !!user;
 
   return (

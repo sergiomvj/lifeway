@@ -7,6 +7,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, MessageCircle, Send, Bot, User, Lightbulb, FileText, Clock } from "lucide-react";
 import { generateChatResponse } from "@/lib/openai";
+import { useUserContext } from "@/hooks/useUserContext";
+import { supabase } from "@/lib/supabaseClient";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -18,16 +20,26 @@ interface Message {
   type?: 'text' | 'suggestion';
 }
 
+interface UserProfile {
+  nome?: string;
+  idade?: number;
+  profissao?: string;
+  experiencia?: string;
+  educacao?: string;
+  objetivo?: string;
+  timeline?: string;
+  investimento?: string;
+  familia?: {
+    conjugue?: string;
+    filhos?: number;
+  };
+}
+
 const Especialista = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: 'Olá! Sou seu especialista em imigração para os EUA. Como posso ajudá-lo hoje? Posso esclarecer dúvidas sobre vistos, processos de imigração, documentação e muito mais.',
-      sender: 'bot',
-      timestamp: new Date(),
-      type: 'text'
-    }
-  ]);
+  const userContext = useUserContext();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [initialMessageSet, setInitialMessageSet] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -50,6 +62,68 @@ const Especialista = () => {
     'documentos': 'Documentos essenciais incluem: passaporte válido, diploma e histórico escolar, certidões de nascimento/casamento, comprovantes financeiros, carta da empresa (se aplicável), exames médicos, e formulários específicos do visto.',
     'entrevista consulado': 'A entrevista no consulado é obrigatória para a maioria dos vistos. Dura cerca de 5-15 minutos. Prepare-se para perguntas sobre: propósito da viagem, vínculos com o Brasil, situação financeira, e detalhes do trabalho/estudo nos EUA.'
   };
+
+  // Carregar perfil do usuário
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!userContext.user?.user_id) return;
+
+      try {
+        // Buscar dados do multistep_forms
+        const { data: formData, error } = await supabase
+          .from('multistep_forms')
+          .select('*')
+          .eq('user_id', userContext.user.user_id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Erro ao buscar perfil do usuário:', error);
+          return;
+        }
+
+        if (formData) {
+          const profile: UserProfile = {
+            nome: formData.nome || formData.first_name,
+            idade: formData.idade || formData.age,
+            profissao: formData.profissao || formData.profession,
+            experiencia: formData.experiencia || formData.experience,
+            educacao: formData.educacao || formData.education,
+            objetivo: formData.objetivo || formData.purpose,
+            timeline: formData.timeline,
+            investimento: formData.investment_capacity,
+            familia: {
+              conjugue: formData.marital_status,
+              filhos: formData.children_count || 0
+            }
+          };
+          setUserProfile(profile);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar perfil do usuário:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [userContext.user?.user_id]);
+
+  // Definir mensagem inicial personalizada
+  useEffect(() => {
+    if (!initialMessageSet) {
+      const firstName = userProfile?.nome?.split(' ')[0] || '';
+      const greeting = firstName 
+        ? `Olá, ${firstName}! Sou LIA, seu especialista em imigração para os EUA. Como posso te ajudar hoje?`
+        : 'Olá! Sou LIA, seu especialista em imigração para os EUA. Como posso te ajudar hoje?';
+      
+      setMessages([{
+        id: '1',
+        content: greeting,
+        sender: 'bot',
+        timestamp: new Date(),
+        type: 'text'
+      }]);
+      setInitialMessageSet(true);
+    }
+  }, [userProfile, initialMessageSet]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -109,8 +183,8 @@ const Especialista = () => {
           content: msg.content
         }));
 
-      // Usa OpenAI para gerar resposta inteligente
-      const aiResponse = await generateChatResponse(currentInput, conversationHistory);
+      // Usa OpenAI para gerar resposta inteligente com contexto do usuário
+      const aiResponse = await generateChatResponse(currentInput, conversationHistory, userProfile || undefined);
       
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -159,7 +233,7 @@ const Especialista = () => {
           <div className="flex items-center justify-center mb-4">
             <MessageCircle className="w-8 h-8 text-blue-500 mr-3" />
             <h1 className="text-4xl font-baskerville font-bold text-petroleo">
-              Especialista de Plantão
+LIA - LifeWay Intelligent Assistant
             </h1>
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -176,7 +250,7 @@ const Especialista = () => {
                 <div className="flex items-center space-x-2">
                   <Bot className="w-6 h-6 text-blue-500" />
                   <div>
-                    <CardTitle className="text-lg">Especialista IA</CardTitle>
+                    <CardTitle className="text-lg">LIA - LifeWay Intelligent Assistant</CardTitle>
                     <p className="text-sm text-gray-600">Especializado em Imigração para os EUA</p>
                   </div>
                 </div>

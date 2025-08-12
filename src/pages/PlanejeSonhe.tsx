@@ -101,7 +101,7 @@ const PlanejeSonhe = () => {
                 <MessageCircle className="w-8 h-8 text-white" />
               </div>
               <CardTitle className="text-2xl font-bold text-gray-800">
-                Especialista Virtual
+LIA - LifeWay Intelligent Assistant
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center">

@@ -300,16 +300,16 @@ export const CurrentSituationStep: React.FC<StepProps> = ({
         </FieldWrapper>
 
         <FieldWrapper
-          field="obstaculos"
+          field="principais_desafios"
           label="Principais desafios"
           getFieldState={getFieldState}
           getValidationSuggestions={getValidationSuggestions}
           formData={formData}
         >
           <Textarea
-            id="obstaculos"
-            value={formData.obstaculos || ''}
-            onChange={(e) => updateFormData('obstaculos', e.target.value)}
+            id="principais_desafios"
+            value={formData.principais_desafios || ''}
+            onChange={(e) => updateFormData('principais_desafios', e.target.value)}
             placeholder="Quais são os maiores obstáculos que você enfrenta?"
             className="w-full min-h-[80px]"
             rows={3}
@@ -357,16 +357,16 @@ export const SpecificDetailsStep: React.FC<StepProps> = ({
 
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
         <FieldWrapper
-          field="detalhes_especificos"
+          field="preferencias"
           label="Preferências e interesses"
           getFieldState={getFieldState}
           getValidationSuggestions={getValidationSuggestions}
           formData={formData}
         >
           <Textarea
-            id="detalhes_especificos"
-            value={formData.detalhes_especificos || ''}
-            onChange={(e) => updateFormData('detalhes_especificos', e.target.value)}
+            id="preferencias"
+            value={formData.preferencias || ''}
+            onChange={(e) => updateFormData('preferencias', e.target.value)}
             placeholder="Conte sobre seus hobbies, interesses e preferências..."
             className="w-full min-h-[80px]"
             rows={3}
@@ -374,27 +374,38 @@ export const SpecificDetailsStep: React.FC<StepProps> = ({
         </FieldWrapper>
 
         <FieldWrapper
-          field="motivacao"
-          label="O que te motiva?"
+          field="experiencias_anteriores"
+          label="Experiências anteriores relevantes"
           getFieldState={getFieldState}
           getValidationSuggestions={getValidationSuggestions}
           formData={formData}
         >
           <Textarea
-            id="motivacao"
-            value={formData.motivacao || ''}
-            onChange={(e) => updateFormData('motivacao', e.target.value)}
-            placeholder="Compartilhe o que te inspira e motiva a buscar seus objetivos..."
+            id="experiencias_anteriores"
+            value={formData.experiencias_anteriores || ''}
+            onChange={(e) => updateFormData('experiencias_anteriores', e.target.value)}
+            placeholder="Experiências passadas que podem ser relevantes para seus objetivos..."
             className="w-full min-h-[80px]"
             rows={3}
           />
         </FieldWrapper>
 
-        <div className="text-center pt-4">
-          <p className="text-sm text-gray-500">
-            ✨ Parabéns! Você completou todas as informações necessárias para criar seu plano personalizado.
-          </p>
-        </div>
+        <FieldWrapper
+          field="observacoes_adicionais"
+          label="Observações adicionais"
+          getFieldState={getFieldState}
+          getValidationSuggestions={getValidationSuggestions}
+          formData={formData}
+        >
+          <Textarea
+            id="observacoes_adicionais"
+            value={formData.observacoes_adicionais || ''}
+            onChange={(e) => updateFormData('observacoes_adicionais', e.target.value)}
+            placeholder="Algo mais que gostaria de compartilhar?"
+            className="w-full min-h-[80px]"
+            rows={3}
+          />
+        </FieldWrapper>
       </div>
     </div>
   );

@@ -1,0 +1,100 @@
+{
+  "tools": [
+    {
+      "id": "criador-sonhos",
+      "name": "Criador de Sonhos",
+      "route": "/dreams",
+      "objective": "Criar uma visão inspiradora e realista do futuro da família nos EUA após 5 anos de imigração",
+      "description": "Gera um relato narrativo personalizado mostrando como seria a vida da família nos Estados Unidos, baseado no perfil, sonhos e valores fornecidos.",
+      "resources": [
+        "Narrativa personalizada baseada no perfil familiar",
+        "Cenários realistas de adaptação e crescimento",
+        "Visualização de conquistas profissionais e pessoais",
+        "Detalhes sobre estilo de vida, moradia e educação",
+        "Progressão cronológica da jornada de imigração",
+        "Inspiração motivacional com base em dados concretos"
+      ],
+      "ideal_for": [
+        "Famílias que querem visualizar seu futuro nos EUA",
+        "Pessoas em dúvida sobre os benefícios da imigração",
+        "Usuários que precisam de motivação para iniciar o processo",
+        "Famílias com filhos que querem entender o impacto educacional",
+        "Profissionais que querem ver oportunidades de carreira"
+      ],
+      "triggers": [
+        "sonho",
+        "futuro",
+        "família",
+        "motivação",
+        "visualizar",
+        "como seria",
+        "vale a pena",
+        "benefícios",
+        "qualidade de vida",
+        "filhos",
+        "educação",
+        "carreira"
+      ]
+    },
+    {
+      "id": "visamatch",
+      "name": "VisaMatch",
+      "route": "/visamatch",
+      "objective": "Analisar o perfil do usuário e recomendar os 3 melhores tipos de visto americano com base em qualificações, recursos e objetivos",
+      "description": "Ferramenta de análise técnica que avalia o perfil completo do usuário e gera recomendações personalizadas de vistos com percentual de compatibilidade, requisitos, custos e prazos.",
+      "resources": [
+        "Análise de compatibilidade com diferentes tipos de visto",
+        "Percentual de match personalizado (0-100%)",
+        "Requisitos específicos para cada visto recomendado",
+        "Estimativas realistas de custos e prazos",
+        "Comparativo detalhado entre opções de visto",
+        "Vantagens e desvantagens de cada estratégia",
+        "Recomendações baseadas em perfil profissional e financeiro"
+      ],
+      "ideal_for": [
+        "Profissionais que querem saber qual visto é mais adequado",
+        "Pessoas com qualificações específicas (tecnologia, medicina, etc.)",
+        "Investidores interessados em vistos de investimento",
+        "Estudantes que querem trabalhar nos EUA",
+        "Famílias que precisam de estratégia de visto familiar",
+        "Pessoas com ofertas de trabalho americanas"
+      ],
+      "triggers": [
+        "visto",
+        "visa",
+        "h1-b",
+        "green card",
+        "eb-5",
+        "o-1",
+        "l-1",
+        "e-2",
+        "qual visto",
+        "melhor visto",
+        "trabalhar",
+        "investir",
+        "qualificações",
+        "profissional",
+        "empresa",
+        "oferta de trabalho"
+      ]
+    }
+  ],
+  "recommendation_rules": {
+    "high_priority": [
+      "Sempre recomende ferramentas quando o usuário demonstrar interesse específico nos triggers",
+      "Priorize VisaMatch para questões técnicas sobre tipos de visto",
+      "Priorize Criador de Sonhos para questões motivacionais ou familiares"
+    ],
+    "context_analysis": [
+      "Analise o histórico da conversa para identificar necessidades",
+      "Considere o perfil do usuário (se disponível) para recomendações personalizadas",
+      "Identifique momentos apropriados para sugerir ferramentas sem ser invasivo"
+    ],
+    "presentation_format": [
+      "Mencione a ferramenta de forma natural na conversa",
+      "Explique brevemente como a ferramenta pode ajudar no caso específico",
+      "Use linguagem convidativa, não imperativa",
+      "Forneça o link/rota quando apropriado"
+    ]
+  }
+}

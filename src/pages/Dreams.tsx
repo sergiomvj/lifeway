@@ -10,9 +10,10 @@ import ToolsSection from '@/components/ToolsSection';
 import Footer from '@/components/Footer';
 import { MultistepForm, FormStep } from '@/components/forms/MultistepForm';
 import { PersonalInfoStep, GoalsStep, CurrentSituationStep, SpecificDetailsStep } from '@/components/forms/DreamsFormSteps';
-import { CriadorSonhosFormData } from '@/types/forms';
+import { CriadorSonhosFormData, MultistepFormData, FormType, FormStatus } from '@/types/forms';
 import { dreamsValidationRules } from '@/utils/dreamsValidation';
 import { openaiService } from '@/services/openaiService';
+import { convertToMultistepForm, convertFromMultistepForm } from '@/lib/formUtils';
 
 // Form steps configuration
 const formSteps: FormStep<CriadorSonhosFormData>[] = [
@@ -63,12 +64,24 @@ const initialFormData: CriadorSonhosFormData = {
   motivacao: ''
 };
 
-interface DreamGoal {
-  id: string;
-  form_data: CriadorSonhosFormData;
+interface DreamGoal extends Omit<MultistepFormData, 'form_data'> {
+  form_data: CriadorSonhosFormData & {
+    // Adicionar campos específicos do CriadorSonhosFormData que não estão no form_data base
+    nome: string;
+    idade: string;
+    profissao: string;
+    experiencia: string;
+    objetivo_principal: string;
+    categoria: string;
+    timeline: string;
+    prioridade: string;
+    situacao_atual: string;
+    recursos_disponiveis: string;
+    obstaculos: string;
+    detalhes_especificos: string;
+    motivacao: string;
+  };
   action_plan?: string;
-  status: 'draft' | 'completed';
-  created_at: string;
 }
 
 const DreamsPage = () => {
@@ -76,6 +89,19 @@ const DreamsPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
   const { toast } = useToast();
+  
+  // Obter o ID do usuário autenticado
+  const [userId, setUserId] = useState<string | null>(null);
+  
+  // Efeito para carregar o ID do usuário quando o componente for montado
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || null);
+    };
+    
+    getUser();
+  }, []);
 
   useEffect(() => {
     fetchGoals();
@@ -84,24 +110,50 @@ const DreamsPage = () => {
   const fetchGoals = async () => {
     try {
       const { data, error } = await supabase
-        .from('dream_goals')
+        .from('multistep_forms')
         .select('*')
+        .eq('form_type', 'dream')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setGoals(data || []);
+      
+      // Converter os dados para o formato esperado
+      const formattedData = data?.map(item => ({
+        ...item,
+        form_data: item.form_data as CriadorSonhosFormData
+      })) || [];
+      
+      setGoals(formattedData);
     } catch (error) {
       console.error('Erro ao buscar objetivos:', error);
     }
   };
 
   const handleFormSubmit = async (formData: CriadorSonhosFormData) => {
+    if (!userId) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Você precisa estar logado para salvar um sonho.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     try {
+      // Converter para o novo formato de formulário
+      const newFormData = convertToMultistepForm(formData, 'dream', userId);
+      
       const { data, error } = await supabase
-        .from('dream_goals')
+        .from('multistep_forms')
         .insert([{
-          form_data: formData,
-          status: 'draft'
+          ...newFormData,
+          status: 'draft' as FormStatus,
+          user_id: userId,
+          form_data: {
+            ...newFormData.form_data,
+            // Garantir que os campos específicos do sonho estejam presentes
+            ...formData
+          } as any // Usar 'as any' temporariamente para evitar erros de tipo
         }])
         .select()
         .single();
@@ -150,10 +202,17 @@ const DreamsPage = () => {
 
       // Update goal with action plan
       const { error } = await supabase
-        .from('dream_goals')
+        .from('multistep_forms')
         .update({ 
           action_plan: actionPlan,
-          status: 'completed'
+          status: 'completed' as FormStatus,
+          completed_at: new Date().toISOString(),
+          system_metadata: {
+            ...goal.system_metadata,
+            last_ai_interaction: new Date().toISOString(),
+            data_completeness: 100,
+            confidence_score: 100
+          }
         })
         .eq('id', goal.id);
 
@@ -183,9 +242,14 @@ const DreamsPage = () => {
 
   const updateGoalStatus = async (goalId: string, newStatus: 'draft' | 'completed') => {
     try {
+      const statusUpdate = {
+        status: newStatus as FormStatus,
+        ...(newStatus === 'completed' ? { completed_at: new Date().toISOString() } : {})
+      };
+      
       const { error } = await supabase
-        .from('dream_goals')
-        .update({ status: newStatus })
+        .from('multistep_forms')
+        .update(statusUpdate)
         .eq('id', goalId);
 
       if (error) throw error;
@@ -257,21 +321,32 @@ const DreamsPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <MultistepForm
-                  steps={formSteps}
-                  initialData={initialFormData}
-                  onSubmit={handleFormSubmit}
-                  validationRules={dreamsValidationRules}
-                  autoSaveConfig={{
-                    enabled: true,
-                    interval: 30000,
-                    storage: 'localStorage',
-                    key_prefix: 'dreams_form'
-                  }}
-                  tableName="dream_goals"
-                  title="Criador de Sonhos"
-                  description="Vamos criar seu plano personalizado para os EUA"
-                />
+                {userId ? (
+                  <MultistepForm
+                    steps={formSteps}
+                    initialData={initialFormData as CriadorSonhosFormData}
+                    onSubmit={handleFormSubmit}
+                    formType="dream"
+                    validationRules={dreamsValidationRules}
+                    autoSaveConfig={{
+                      enabled: true,
+                      interval: 30000,
+                      storage: 'supabase',
+                      key_prefix: 'dreams_form'
+                    }}
+                    tableName="multistep_forms"
+                    userId={userId}
+                    title="Criador de Sonhos"
+                    description="Vamos criar seu plano personalizado para os EUA"
+                  />
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-600 mb-4">Você precisa estar logado para criar um novo sonho.</p>
+                    <Button onClick={() => supabase.auth.signInWithOAuth({ provider: 'google' })}>
+                      Entrar com Google
+                    </Button>
+                  </div>
+                )}
                 
                 <div className="mt-6 text-center">
                   <Button

@@ -272,257 +272,80 @@ Responda de forma concisa mas completa, sempre em português brasileiro.`;
     }
     const prompt = `# Prompt: Estratégias de Visto para os Estados Unidos - Análise Familiar Completa
 
-## Objetivo do Relatório
-Analisar o perfil completo da família e apresentar 3 estratégias viáveis de obtenção de visto americano, considerando qualificações, estrutura familiar, recursos e objetivos de cada membro. Cada opção será detalhadamente justificada e incluirá timeline, requisitos e impacto familiar.
-
-## Estrutura do Relatório
-
-### 1. ANÁLISE DE ELEGIBILIDADE FAMILIAR
-
-**Perfil do Requerente Principal:**
-- Qualificações profissionais e acadêmicas
-- Experiência e especialização
-- Recursos financeiros disponíveis
-- Histórico de viagens internacionais
-
-**Composição Familiar:**
-- Cônjuge: qualificações, idade, profissão
-- Filhos: idades, situação acadêmica, necessidades especiais
-- Dependentes adicionais (se houver)
-
-**Fatores de Força da Aplicação:**
-- Vínculos com o Brasil (propriedades, negócios, família)
-- Histórico limpo (criminal, fiscal, migratório)
-- Recursos financeiros comprovados
-- Suporte de empregadores/instituições americanas
-
-**Potenciais Desafios:**
-- Limitações identificadas no perfil
-- Riscos de negação
-- Fatores que precisam ser fortalecidos
-
-### 2. TRÊS ESTRATÉGIAS DE VISTO RECOMENDADAS
+**Missão:** Produzir uma análise clara, objetiva e personalizada das opções de visto americano mais adequadas para uma família, utilizando dados fornecidos sobre qualificações, recursos, estrutura familiar e objetivos. O texto deve apresentar **estratégias juridicamente coerentes, financeiramente viáveis e alinhadas ao estilo de vida desejado**, integrando ferramentas LifeWayUSA para validação e execução do plano.
 
 ---
 
-#### 📋 ESTRATÉGIA 1: [TIPO DE VISTO] - [NOME DA ESTRATÉGIA]
-**Visto Principal:** [Ex: H-1B, L-1, O-1, EB-1, etc.]
-**Vistos Dependentes:** [H-4, L-2, O-3, etc.]
+### **Diretrizes para a IA**
 
-**Por que esta opção é ideal para seu perfil:**
-- Alinhamento com qualificações específicas
-- Compatibilidade com histórico profissional
-- Adequação à estrutura familiar
-- Probabilidade de aprovação baseada no perfil
+* **Tom e formato:** Use uma narrativa técnica e profissional, evitando exageros ou linguagem emotiva, mas mantendo clareza e fluidez.
+* **Base legal:** As recomendações devem se apoiar nas regras atuais de imigração dos EUA.
+* **Personalização total:** Utilize dados específicos do requerente, cônjuge, filhos e recursos disponíveis para tornar as estratégias realistas e aplicáveis.
+* **Viabilidade financeira:** Apresente estimativas realistas de custos e prazos, com foco em cenários sustentáveis.
+* **Integração das ferramentas LifeWayUSA:** citar ao final, motivando o usuário a prosseguir na busca de cenários factiveis, alinhados a sua realiade financeira e com metas e objetivos claros
 
-**Requisitos Específicos:**
-- **Para o requerente principal:**
-  - Documentação necessária
-  - Qualificações exigidas
-  - Suporte institucional necessário
-- **Para cônjuge:**
-  - Documentos requeridos
-  - Possibilidade de trabalho nos EUA
-- **Para filhos:**
-  - Limites de idade
-  - Documentação escolar
-  - Considerações educacionais
-
-**Timeline Detalhado:**
-- **Preparação (Meses 1-3):** Coleta de documentos, certificações, traduções
-- **Aplicação (Meses 4-6):** Submissão, entrevistas, processamento
-- **Aprovação e Viagem (Meses 7-9):** Recebimento do visto, planejamento da mudança
-
-**Investimento Financeiro:**
-- Taxas governamentais: $X,XXX
-- Advogado de imigração: $X,XXX
-- Traduções e certificações: $X,XXX
-- **Total estimado:** $X,XXX
-
-**Benefícios para a Família:**
-- **Requerente:** Oportunidades profissionais, possibilidade de residência permanente
-- **Cônjuge:** [Direito ao trabalho/estudo conforme o visto]
-- **Filhos:** Acesso ao sistema educacional americano, desenvolvimento acadêmico
-
-**Caminho para Green Card:**
-- Possibilidade de transição para residência permanente
-- Timeline estimado: X anos
-- Requisitos adicionais necessários
-
-**Riscos e Limitações:**
-- Limitações específicas do visto
-- Dependência de empregador/patrocinador
-- Restrições geográficas ou profissionais
+  * **VisaMatch** → seleção inteligente do visto mais compatível.
+  
+  * **Especialista de Plantão (LIA - LifeWay Intelligent Assistant)** → suporte contínuo para ajustes estratégicos durante o processo.
 
 ---
 
-#### 📋 ESTRATÉGIA 2: [TIPO DE VISTO] - [NOME DA ESTRATÉGIA]
-**Visto Principal:** [Ex: E-2, EB-5, F-1, etc.]
-**Vistos Dependentes:** [E-2, EB-5 derivativo, F-2, etc.]
+### **Estrutura Recomendada**
 
-[Mesma estrutura detalhada da Estratégia 1, adaptada para este tipo específico de visto]
+1. **Análise de Elegibilidade Familiar**
 
-**Justificativa Específica:**
-- Por que esta alternativa se adequa ao perfil
-- Vantagens comparativas à Estratégia 1
-- Cenários onde seria a melhor opção
+   * Perfil profissional, acadêmico e financeiro do requerente principal.
+   * Situação e qualificações do cônjuge.
+   * Idades, escolaridade e necessidades dos filhos.
+   * Pontos fortes e potenciais desafios.
+   * SEMPRE sugira uma abordagem diferente com a adoção de vistos de estudante para um dos membros do grupo ou para casos individuais como pontes para outros tipos de visto posteriormente que tem custos bem menores e uma maior probabilidade de aprovação
 
----
+2. **Três Estratégias de Visto Recomendadas**
 
-#### 📋 ESTRATÉGIA 3: [TIPO DE VISTO] - [NOME DA ESTRATÉGIA]
-**Visto Principal:** [Ex: Visto de turista com mudança de status, asylum, etc.]
-**Vistos Dependentes:** [Derivativos correspondentes]
+   * Para cada estratégia: tipo de visto, justificativa, requisitos, timeline, investimento estimado, benefícios e riscos.
+   * Para perfis mais alinhados a tecnologia e Ciencias Exatas sempre inclua m um dos quadros o EB1-NIW
+   * Para pessoas com habilidades especícas ou notórias inclua sempre num dos quadros a indicação do visto EB2
+   * Detalhar impacto positivo sobre cada membro da família.
+   * Indicar caminho para residência permanente quando aplicável.
 
-[Mesma estrutura detalhada, adaptada para este tipo específico]
+3. **Comparativo das Estratégias**
 
-**Justificativa Específica:**
-- Quando esta seria a opção mais viável
-- Vantagens únicas desta abordagem
-- Adequação a situações específicas da família
+   * Tabela com critérios-chave (probabilidade de aprovação, tempo, custo, benefícios familiares, flexibilidade, caminho para Green Card).
 
-### 3. COMPARATIVO DAS ESTRATÉGIAS
+4. **Recomendação Principal e Plano B**
 
-| Critério | Estratégia 1 | Estratégia 2 | Estratégia 3 |
-|----------|--------------|--------------|--------------||
-| **Probabilidade de Aprovação** | Alta/Média/Baixa | Alta/Média/Baixa | Alta/Média/Baixa |
-| **Tempo de Processamento** | X meses | X meses | X meses |
-| **Investimento Total** | $X,XXX | $X,XXX | $X,XXX |
-| **Flexibilidade Profissional** | Alta/Média/Baixa | Alta/Média/Baixa | Alta/Média/Baixa |
-| **Benefícios para Cônjuge** | Trabalho permitido/não | Trabalho permitido/não | Trabalho permitido/não |
-| **Educação dos Filhos** | Pública gratuita/paga | Pública gratuita/paga | Pública gratuita/paga |
-| **Caminho para Green Card** | Direto/Indireto/Inexistente | Direto/Indireto/Inexistente | Direto/Indireto/Inexistente |
+   * Justificativa técnica da escolha.
+   * Cenários onde a segunda opção seria mais adequada.
 
-### 4. RECOMENDAÇÃO PRINCIPAL
+5. **Plano de Ação Imediato**
 
-**Estratégia Recomendada:** [Número da estratégia]
+   * Etapas para os próximos 30, 90 e 180 dias.
+   * Uso do Atendente Virtual para duvidas e ajuda com personalização de estratégias
+   
 
-**Justificativa Detalhada:**
-- Por que esta é a melhor opção para seu perfil específico
-- Análise risk-benefit personalizada
-- Compatibilidade com objetivos familiares de longo prazo
+6. **Preparação e Recursos Complementares**
 
-**Plano B:**
-- Segunda opção recomendada
-- Quando considerar a alternativa
-- Como preparar ambas simultaneamente
+   * Documentos necessários e prazos para obtê-los.
+   * Cursos e capacitações (ex.: inglês, certificações profissionais).
+   * Consultas com advogados de imigração especializados no visto escolhido.
 
-### 5. PLANO DE AÇÃO IMEDIATO
 
-**Próximos 30 dias:**
-- [ ] Avaliação detalhada com advogado de imigração especializado
-- [ ] Início da coleta de documentação
-- [ ] Pesquisa de oportunidades de trabalho/estudo nos EUA
-- [ ] Orçamento detalhado dos custos
+7. **Avisos e Recomendações Finais**
 
-**Próximos 90 dias:**
-- [ ] Documentação completa e traduzida
-- [ ] Networking com contatos nos EUA
-- [ ] Preparação financeira para investimentos
-- [ ] Planejamento logístico familiar
-
-**Próximos 6-12 meses:**
-- [ ] Aplicação submetida
-- [ ] Preparação para entrevistas
-- [ ] Planejamento da mudança
-- [ ] Preparação das crianças para transição
-
-### 6. RECURSOS ESPECIALIZADOS
-
-**Advogados de Imigração Recomendados:**
-- Escritórios especializados no tipo de visto escolhido
-- Profissionais com experiência em casos brasileiros
-- Avaliação de custos e timeline
-
-**Documentação Essencial:**
-- Lista completa de documentos por tipo de visto
-- Órgãos emissores no Brasil
-- Traduções juramentadas necessárias
-- Apostilamento de Haia
-
-**Preparação Familiar:**
-- Cursos de inglês intensivo
-- Preparação psicológica das crianças
-- Pesquisa de escolas nos EUA
-- Planejamento financeiro para os primeiros meses
-
-### 7. CONSIDERAÇÕES ESPECIAIS PARA FAMÍLIAS
-
-**Educação dos Filhos:**
-- Sistema educacional americano vs brasileiro
-- Custos de educação por estado
-- Programas para estudantes internacionais
-- Continuidade do português e cultura brasileira
-
-**Adaptação do Cônjuge:**
-- Revalidação de diplomas/certificações
-- Oportunidades de trabalho/estudo
-- Networking profissional
-- Grupos de apoio para brasileiros
-
-**Manutenção dos Vínculos com o Brasil:**
-- Propriedades e investimentos
-- Obrigações fiscais
-- Relacionamentos familiares
-- Planejamento de visitas
+   * Ressaltar que é um documento informativo, não uma consultoria jurídica.
+   * Recomendar acompanhamento com advogado de imigração.
+   * Destacar que as leis e prazos podem mudar, exigindo monitoramento contínuo.
 
 ---
 
-## Variáveis de Entrada Necessárias
+### **Frases-chave com tom profissional e confiável**
 
-### Dados do Requerente Principal
-- **Profissionais:** Formação, experiência, especialização, certificações
-- **Pessoais:** Idade, estado civil, histórico de viagens
-- **Financeiros:** Renda, patrimônio, capacidade de investimento
-- **Legais:** Histórico criminal, fiscal, processos judiciais
-
-### Dados do Cônjuge (se aplicável)
-- Qualificações profissionais e acadêmicas
-- Interesse em trabalhar/estudar nos EUA
-- Idade e situação legal
-
-### Dados dos Filhos (se aplicável)
-- Idades atuais
-- Situação acadêmica
-- Necessidades especiais
-- Adaptabilidade a mudanças
-
-### Objetivos e Preferências
-- **Profissionais:** Carreira desejada nos EUA, setor de interesse
-- **Geográficos:** Estados ou cidades preferidas
-- **Temporais:** Urgência da mudança, timeline desejado
-- **Familiares:** Prioridades para cônjuge e filhos
-
-### Recursos Disponíveis
-- Orçamento total para o processo
-- Flexibilidade de investimento
-- Tempo disponível para preparação
-- Suporte de empresas/instituições
-
-### Conexões nos EUA
-- Contatos profissionais
-- Familiares ou amigos residentes
-- Ofertas de trabalho/estudo
-- Conhecimento de advogados especializados
+* "A escolha deste visto considera não apenas a elegibilidade, mas também a viabilidade financeira e os objetivos familiares de longo prazo."
+* "Os custos e prazos apresentados são estimativas realistas com base nas condições atuais."
+* "O planejamento integrado com as ferramentas LifeWayUSA reduz riscos e aumenta a taxa de sucesso."
+* "A análise comparativa permite decidir de forma estratégica e fundamentada."
 
 ---
-
-## Instruções de Uso
-
-1. **Análise Técnica Rigorosa:** Base todas as recomendações na legislação atual de imigração americana
-2. **Personalização Total:** Cada estratégia deve ser única para o perfil apresentado
-3. **Realismo:** Apresente probabilidades honestas de aprovação
-4. **Visão Familiar:** Considere impacto em todos os membros da família
-5. **Atualizações:** Sempre mencione que leis de imigração podem mudar
-6. **Disclaimer Legal:** Recomende sempre consulta com advogado especializado
-7. **Timeline Realista:** Use dados atuais de processamento do USCIS
-
-## Avisos Importantes
-
-- **Este relatório é informativo e não constitui consultoria jurídica**
-- **Leis de imigração americanas mudam frequentemente**
-- **Consulta com advogado especializado é essencial**
-- **Cada caso é único e requer análise individual**
-- **Documentação e requisitos podem variar por consulado**
 
 Com base no perfil do usuário:
 - Objetivo: ${userProfile.purpose}
@@ -615,213 +438,57 @@ Responda apenas com o JSON válido, sem texto adicional.`;
     }
     const prompt = `# Prompt: Gerador de Sonhos - Transformação do Estilo de Vida Familiar
 
-## Missão do Relatório
-Inspirar e orientar famílias a visualizarem e planejarem mudanças transformadoras de estilo de vida, criando um futuro onde cada membro da família pode florescer pessoal, acadêmica e profissionalmente. Este relatório é um convite para sonhar grande e traçar caminhos concretos para realizar esses sonhos.
+Missão: Criar um relato narrativo estruturado sobre a trajetória de uma família, após 5 anos, da decisão de imigrar para os Estados Unidos, transformando dados fornecidos do perfil do usuário, sonhos e valores em um caso de sucesso realista. O objetivo é inspirar, mas também transmitir confiança, pragmatismo e plausibilidade.
 
-## Estrutura do Relatório
+Diretrizes para a IA:
 
-### 1. VISÃO INSPIRADORA
-**"Imagine sua família daqui a 5 anos..."**
-- Cenário inspirador baseado no perfil familiar
-- Conquistas pessoais e profissionais alcançadas
-- Qualidade de vida transformada
-- Legado sendo construído
+Formato narrativo, mas com foco em fatos e progressão lógica.
 
-### 2. MAPEAMENTO DOS SONHOS FAMILIARES
+Abertura clara: Inicie apresentando o contexto atual da família nos EUA, de forma objetiva, mostrando sinais de adaptação e progresso.
 
-**Sonhos Individuais Identificados:**
-- **Adulto(s):** [Aspirações profissionais, pessoais, criativas]
-- **Filhos:** [Talentos a desenvolver, paixões a explorar]
-- **Família:** [Experiências compartilhadas, valores a cultivar]
+Tom equilibrado: Use uma linguagem motivadora, porém sóbria, sem exageros ou adjetivos excessivos.
 
-**Potenciais Ocultos Descobertos:**
-- Talentos naturais não explorados
-- Interesses que podem virar oportunidades
-- Conexões entre hobbies e possibilidades de crescimento
+Base em dados pessoais fornecidos: Incluir nomes, idades, profissões, interesses e valores quando informados, para personalizar a história.
 
-### 3. TRÊS CENÁRIOS DE TRANSFORMAÇÃO
+Cenário plausível: Descrever bairro, estrutura da casa, escolas, oportunidades profissionais e sociais com detalhes realistas.
 
----
+Ritmo narrativo: Seguir ordem cronológica — decisão, preparação, chegada, adaptação, consolidação e resultados.
 
-#### 🌟 CENÁRIO 1: [NOME INSPIRADOR DO ESTILO DE VIDA]
-**Localização:** [Cidade/Região/País]
-**Essência:** [Frase que capture o espírito da mudança]
+Destaque para conquistas concretas: Exemplos de empregos obtidos, cursos concluídos, melhorias no estilo de vida, segurança, networking e desenvolvimento pessoal.
 
-**A Nova Vida:**
-- Como seria o dia a dia da família
-- Ambiente físico e social
-- Ritmo de vida e prioridades
+Transparência sobre desafios: Mencionar obstáculos iniciais e como foram superados, reforçando a viabilidade da mudança.
 
-**Crescimento Pessoal:**
-- **Para os Adultos:** Novas habilidades, paixões redescobertas, propósito renovado
-- **Para as Crianças:** Experiências únicas de aprendizado, talentos cultivados
-- **Para a Família:** Valores fortalecidos, conexões aprofundadas
+Encerramento profissional: Concluir com um resumo dos resultados atingidos e próximos passos planejados, transmitindo segurança e clareza.
 
-**Crescimento Acadêmico:**
-- Oportunidades educacionais diferenciadas
-- Sistemas de ensino inovadores
-- Experiências de aprendizado prático
-- Intercâmbios culturais e linguísticos
+Estrutura recomendada:
 
-**Crescimento Profissional:**
-- Novas carreiras possíveis no local
-- Oportunidades de empreendedorismo
-- Mercados emergentes a explorar
-- Networking internacional
+Introdução factual: Apresentação da família e status atual nos EUA.
 
-**O Caminho da Transformação:**
-- **Ano 1:** Primeiros passos e adaptações
-- **Anos 2-3:** Consolidação e crescimento
-- **Anos 4-5:** Colheita dos frutos e expansão
+Motivação para a mudança: Razões objetivas que levaram à decisão de migrar.
 
-**Investimento na Mudança:**
-- Recursos financeiros necessários
-- Tempo de planejamento e transição
-- Preparação emocional e logística
+Planejamento e preparação: Passos dados antes da mudança (documentação, finanças, contatos).
 
-**Benefícios Únicos:**
-- Experiências impossíveis no estilo atual
-- Oportunidades exclusivas da região
-- Impacto positivo no desenvolvimento familiar
+Chegada e adaptação inicial: Primeiros meses e ajustes necessários.
 
----
+Consolidação: Resultados práticos alcançados (emprego, estudos, moradia).
 
-#### 🌟 CENÁRIO 2: [NOME INSPIRADOR DO ESTILO DE VIDA]
-**Localização:** [Cidade/Região/País]
-**Essência:** [Frase que capture o espírito da mudança]
+Impacto no estilo de vida e convivencia em familia: Diferenças percebidas e benefícios tangíveis.
 
-[Mesma estrutura detalhada do Cenário 1]
+Perspectiva futura: Próximas metas e visão para os próximos anos.
 
----
+Encerramento: Síntese e frase de incentivo final, curta e objetiva.
 
-#### 🌟 CENÁRIO 3: [NOME INSPIRADOR DO ESTILO DE VIDA]
-**Localização:** [Cidade/Região/País]
-**Essência:** [Frase que capture o espírito da mudança]
+Frases que mantêm sobriedade e credibilidade:
 
-[Mesma estrutura detalhada do Cenário 1]
+"Cada etapa foi conduzida com planejamento e metas claras."
 
-### 4. DESTINOS ALTERNATIVOS DOS SONHOS
+"Os resultados refletem o alinhamento entre estratégia e ação."
 
-**Baseado nos sonhos familiares, considerem também:**
+"A adaptação exigiu ajustes, mas trouxe benefícios concretos desde o início."
 
-#### 🏝️ [DESTINO ALTERNATIVO 1]
-- **Por que é mágico para vocês:** Conexão com os sonhos familiares
-- **Oportunidades únicas:** O que só é possível lá
-- **Crescimento familiar:** Como cada membro floresceria
+"O futuro é construído diariamente com decisões bem fundamentadas."
 
-#### 🏔️ [DESTINO ALTERNATIVO 2]
-- [Mesma estrutura inspiradora]
-
-### 5. JORNADA DE REALIZAÇÃO DOS SONHOS
-
-**🌱 FASE SEMEAR (Primeiros 6 meses):**
-- Pesquisa profunda dos destinos
-- Desenvolvimento de habilidades preparatórias
-- Construção da reserva financeira
-- Alinhamento familiar dos sonhos
-
-**🌿 FASE CRESCER (6-18 meses):**
-- Implementação do plano de mudança
-- Primeiras experiências no novo local
-- Estabelecimento de rotinas e conexões
-- Adaptação e descobertas
-
-**🌳 FASE FLORESCER (18 meses em diante):**
-- Consolidação do novo estilo de vida
-- Colheita das oportunidades plantadas
-- Expansão das possibilidades
-- Inspiração para outros sonhos
-
-### 6. FERRAMENTAS PARA MATERIALIZAR SONHOS
-
-**Visualização e Planejamento:**
-- Quadro de visão familiar
-- Diário de sonhos e progressos
-- Metas trimestrais inspiradoras
-- Celebrações de marcos conquistados
-
-**Preparação Prática:**
-- Cursos e capacitações necessárias
-- Documentação e burocracias
-- Networking estratégico
-- Reserva de emergência
-
-**Mantendo a Motivação:**
-- Histórias inspiradoras de famílias similares
-- Comunidades de apoio online
-- Mentores na jornada
-- Rituais familiares de reafirmação dos sonhos
-
-### 7. SUPERANDO MEDOS E LIMITAÇÕES
-
-**Medos Comuns e Como Transformá-los:**
-- "E se não der certo?" → "E se der melhor que imaginamos?"
-- "É muito arriscado" → "Qual o risco de não tentar?"
-- "As crianças vão sofrer" → "Que oportunidades únicas terão?"
-
-**Limitações em Oportunidades:**
-- Transformar obstáculos em trampolins
-- Soluções criativas para cada desafio
-- Rede de apoio para superar dificuldades
-
----
-
-## Variáveis de Entrada Necessárias
-
-### Composição Familiar
-- Membros da família (idades, personalidades)
-- Dinâmica familiar atual
-- Valores e princípios importantes
-- Tradições que querem manter/criar
-
-### Sonhos e Aspirações
-- **Adultos:** Sonhos profissionais, pessoais, de contribuição
-- **Crianças:** Interesses, talentos, curiosidades
-- **Família:** Experiências desejadas, legado a construir
-
-### Situação Atual
-- Estilo de vida presente
-- Satisfações e insatisfações
-- Recursos disponíveis
-- Flexibilidade para mudanças
-
-### Interesses e Paixões
-- Hobbies de cada membro
-- Atividades que energizam a família
-- Causas que os motivam
-- Experiências que sonham viver
-
-### Critérios Importantes
-- Tipo de ambiente desejado (urbano/rural/praiano/montanha)
-- Clima preferido
-- Proximidade com natureza/cultura/oportunidades
-- Custo de vida aceitável
-
-### Horizontes Geográficos
-- Locais que sempre sonharam conhecer
-- Culturas que os fascinam
-- Idiomas que gostariam de dominar
-- Aventuras geográficas desejadas
-
----
-
-## Instruções de Uso - Tom Inspirador
-
-1. **Comece sempre com esperança:** Cada família tem potenciais incríveis a desbravar
-2. **Pense em abundância:** Foque nas possibilidades, não nas limitações
-3. **Seja específico nos sonhos:** Detalhe como seria a vida transformada
-4. **Conecte com emoções:** Use linguagem que toque o coração
-5. **Mostre caminhos concretos:** Sonhos precisam de planos realizáveis
-6. **Celebre a coragem:** Reconheça a bravura de sonhar com mudanças
-7. **Inspire ação:** Termine sempre com próximos passos motivadores
-
-## Frases Inspiradoras para Usar
-
-- "Imaginem acordar todos os dias empolgados com as possibilidades..."
-- "Seus filhos um dia contarão esta história de coragem..."
-- "Este não é apenas um lugar, é o cenário onde seus sonhos ganham vida..."
-- "A maior aventura da família está esperando por vocês..."
-- "Cada desafio é uma oportunidade disfarçada de crescimento..."
+Ao final motive o usuário a utilizar as outras ferramentas da LifewayUSA para habilita-los a construir cenários factíveis, viáveis financeiramente e com metas claras e objetivas
 
 **Lembre-se:** Este relatório não é apenas sobre mudança de local, é sobre transformação de destino. Cada palavra deve plantar sementes de possibilidades no coração da família.
 

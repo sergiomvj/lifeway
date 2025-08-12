@@ -1,19 +1,96 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, CheckCircle, ArrowRight, RotateCcw, FileText, Clock, DollarSign, Users } from "lucide-react";
+import { ArrowLeft, CheckCircle, ArrowRight, RotateCcw, FileText, Clock, DollarSign, Users, Loader2 } from "lucide-react";
 import { openaiService } from "@/services/openaiService";
+import { supabase } from "@/lib/supabaseClient";
+import { useToast } from "@/hooks/use-toast";
+import { MultistepForm, FormStep } from "@/components/forms/MultistepForm";
+import { VisaMatchFormData, VisaMatchStep1, VisaMatchStep2, VisaMatchStep3, VisaMatchStep4 } from "@/components/forms/VisaMatchFormSteps";
+import { convertToMultistepForm, convertFromMultistepForm } from "@/lib/formUtils";
+import { FormStatus, FormType } from "@/types/forms";
 
-interface Question {
-  id: string;
-  question: string;
-  options: { value: string; label: string; }[];
-}
+// Definição das etapas do formulário
+const formSteps: FormStep<VisaMatchFormData>[] = [
+  {
+    id: 'purpose',
+    title: 'Objetivo',
+    description: 'Qual é o seu principal objetivo nos EUA?',
+    fields: ['purpose'],
+    component: VisaMatchStep1
+  },
+  {
+    id: 'education_experience',
+    title: 'Formação e Experiência',
+    description: 'Conte-nos sobre sua formação e experiência profissional',
+    fields: ['education', 'experience'],
+    component: VisaMatchStep2
+  },
+  {
+    id: 'job_offer',
+    title: 'Oferta de Emprego',
+    description: 'Você já tem uma oferta de trabalho?',
+    fields: ['jobOffer'],
+    component: VisaMatchStep3
+  },
+  {
+    id: 'investment_timeline',
+    title: 'Investimento e Prazo',
+    description: 'Quanto você pode investir e qual seu prazo?',
+    fields: ['financial_info.investment_capacity', 'preferences.timeline'],
+    component: VisaMatchStep4
+  }
+];
+
+// Dados iniciais do formulário
+const initialFormData: VisaMatchFormData = {
+  travel_info: {
+    purpose: 'tourism', // tourism, work, study, investment, other
+    has_job_offer: false,
+    job_offer_details: {
+      position: '',
+      company: '',
+      salary: 0,
+      start_date: ''
+    },
+    family_in_us: false,
+    family_details: []
+  },
+  professional_info: {
+    education_level: 'high_school', // high_school, bachelors, masters, phd, other
+    years_of_experience: 0,
+    current_occupation: '',
+    has_us_education: false,
+    us_education_details: {
+      degree: '',
+      field_of_study: '',
+      institution: '',
+      graduation_year: ''
+    },
+    has_us_experience: false,
+    us_experience_details: []
+  },
+  financial_info: {
+    real_estate_value: 0,
+    annual_income: 0,
+    investment_capacity: 0,
+    debt_obligations: 0,
+    financial_dependents: 0
+  },
+  goals_info: {
+    primary_goal: '',
+    secondary_goals: [],
+    timeline_flexibility: 'flexible',
+    location_flexibility: 'anywhere',
+    career_goals: [],
+    lifestyle_priorities: []
+  }
+};
 
 interface VisaRecommendation {
   type: string;
@@ -27,13 +104,89 @@ interface VisaRecommendation {
   cons: string[];
 }
 
-const VisaMatch = () => {
+interface VisaMatchProps {
+  formId?: string;
+}
+
+const VisaMatch = ({ formId: propFormId }: VisaMatchProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { id: urlFormId } = useParams<{ id?: string }>();
+  const formId = propFormId || urlFormId;
+  
   const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [answers, setAnswers] = useState<VisaMatchFormData>(initialFormData);
   const [showResults, setShowResults] = useState(false);
   const [recommendations, setRecommendations] = useState<VisaRecommendation[]>([]);
+  const [isLoading, setIsLoading] = useState(!!formId);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [visitedSteps, setVisitedSteps] = useState<Set<number>>(new Set([0]));
+  
+  // Carregar dados do formulário existente se formId for fornecido
+  useEffect(() => {
+    const loadFormData = async () => {
+      if (!formId) return;
+      
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('multistep_forms')
+          .select('*')
+          .eq('id', formId)
+          .single();
+          
+        if (error) throw error;
+        
+        if (data) {
+          // Verificar se o formulário é do tipo 'visa'
+          if (data.form_type !== 'visa') {
+            throw new Error('Este não é um formulário de VisaMatch');
+          }
+          
+          // Converter os dados do formato MultistepFormData para VisaMatchFormData
+          const formData = convertFromMultistepForm(data) as VisaMatchFormData;
+          setAnswers(formData);
+          
+          // Se já tiver recomendações, carregar
+          if (data.action_plan) {
+            try {
+              const recs = JSON.parse(data.action_plan);
+              if (Array.isArray(recs)) {
+                setRecommendations(recs);
+                setShowResults(true);
+              }
+            } catch (e) {
+              console.error('Erro ao carregar recomendações:', e);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar formulário:', error);
+        toast({
+          title: 'Erro',
+          description: 'Não foi possível carregar o formulário. Tente novamente.',
+          variant: 'destructive',
+        });
+        // Redirecionar para a página inicial em caso de erro
+        navigate('/');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    // Obter usuário logado
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || null);
+    };
+    
+    getUser();
+    loadFormData();
+  }, [formId, toast, navigate]);
 
-  const questions: Question[] = [
+  // Dados das perguntas para referência
+  const questionsData = [
     {
       id: 'purpose',
       question: 'Qual é o seu principal objetivo nos EUA?',
@@ -97,29 +250,91 @@ const VisaMatch = () => {
     }
   ];
 
-  const handleAnswer = (value: string) => {
-    const currentQuestion = questions[currentStep];
-    setAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
-  };
-
-  const nextStep = () => {
-    if (currentStep < questions.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      calculateRecommendations();
+  const handleFormSubmit = async (formData: VisaMatchFormData) => {
+    if (!userId) {
+      toast({
+        title: "Erro de autenticação",
+        description: "Você precisa estar logado para salvar sua análise.",
+        variant: "destructive"
+      });
+      return;
     }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const calculateRecommendations = async () => {
+    
     try {
+      setIsSubmitting(true);
+      
+      // Converter os dados para o formato MultistepFormData
+      const newFormData = convertToMultistepForm(formData, 'visa', userId);
+      
+      // Preparar os dados para salvar no Supabase
+      const formToSave = {
+        ...newFormData,
+        status: 'completed' as FormStatus,
+        updated_at: new Date().toISOString(),
+        completed_at: new Date().toISOString(),
+        system_metadata: {
+          ...newFormData.system_metadata,
+          data_completeness: 100,
+          last_validation: new Date().toISOString(),
+          source: 'web'
+        }
+      };
+      
+      // Salvar no Supabase
+      const { data, error } = await supabase
+        .from('multistep_forms')
+        .upsert([
+          formId ? { ...formToSave, id: formId } : formToSave
+        ])
+        .select()
+        .single();
+        
+      if (error) throw error;
+      
+      // Gerar recomendações
+      await calculateRecommendations(formData, data.id);
+      
+      // Atualizar o ID do formulário se for uma nova criação
+      if (!formId) {
+        // Atualizar a URL com o novo ID
+        navigate(`/visamatch/${data.id}`, { replace: true });
+      }
+      
+      toast({
+        title: "Sucesso",
+        description: "Sua análise foi salva com sucesso!",
+        variant: "default"
+      });
+      
+      return data;
+      
+    } catch (error) {
+      console.error('Erro ao salvar formulário:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível salvar sua análise. Tente novamente.',
+        variant: 'destructive',
+      });
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  const handleStepChange = (step: number, formData: VisaMatchFormData) => {
+    setAnswers(formData);
+    setCurrentStep(step);
+    
+    // Marca o passo como visitado
+    setVisitedSteps(prev => new Set([...prev, step]));
+  };
+
+  const calculateRecommendations = async (formData: VisaMatchFormData, formId: string) => {
+    try {
+      setIsLoading(true);
+      
       // Use enhanced OpenAI service with retry logic and better error handling
-      const aiRecommendations = await openaiService.generateVisaRecommendations(answers, {
+      const aiRecommendations = await openaiService.generateVisaRecommendations(formData, {
         onRetry: (attempt, error) => {
           console.log(`Tentativa ${attempt} falhou, tentando novamente...`, error.message);
         },
@@ -131,20 +346,48 @@ const VisaMatch = () => {
         }
       });
       
+      let finalRecommendations: VisaRecommendation[] = [];
+      
       if (aiRecommendations && Array.isArray(aiRecommendations)) {
-        setRecommendations(aiRecommendations.sort((a, b) => b.match - a.match));
-        setShowResults(true);
-        return;
+        finalRecommendations = aiRecommendations;
+      } else {
+        // Fallback para lógica local
+        finalRecommendations = getFallbackRecommendations(formData);
       }
+      
+      // Ordenar por compatibilidade
+      finalRecommendations.sort((a, b) => b.match - a.match);
+      
+      // Atualizar estado
+      setRecommendations(finalRecommendations);
+      setShowResults(true);
+      
+      // Atualizar o formulário com as recomendações
+      await updateFormWithRecommendations(formId, finalRecommendations);
+      
+      return finalRecommendations;
+      
     } catch (error) {
       console.error('Erro ao gerar recomendações com IA:', error);
+      const fallbackRecs = getFallbackRecommendations(formData);
+      setRecommendations(fallbackRecs);
+      setShowResults(true);
+      return fallbackRecs;
+    } finally {
+      setIsLoading(false);
     }
-
-    // Fallback para lógica local
+  };
+  
+  const getFallbackRecommendations = (formData: VisaMatchFormData): VisaRecommendation[] => {
     const recs: VisaRecommendation[] = [];
-
+    
     // Lógica de recomendação baseada nas respostas
-    if (answers.purpose === 'work' && answers.jobOffer === 'yes') {
+    const purpose = formData.travel_info?.purpose;
+    const hasJobOffer = formData.travel_info?.has_job_offer;
+    const investment = formData.financial_info?.investment_capacity || 0;
+    
+    // Visto H1-B para trabalho especializado
+    if (purpose === 'work' && hasJobOffer) {
       recs.push({
         type: 'H1-B',
         name: 'Visto H1-B - Trabalhador Especializado',
@@ -157,49 +400,53 @@ const VisaMatch = () => {
         cons: ['Dependente do empregador', 'Processo competitivo', 'Limitações de mudança de emprego']
       });
     }
-
-    if (answers.purpose === 'invest' && (answers.investment === 'high' || answers.investment === 'very-high')) {
+    
+    // Visto L-1 para transferência entre empresas
+    if (purpose === 'work' && formData.professional_info?.has_us_experience) {
       recs.push({
-        type: 'EB-5',
-        name: 'Visto EB-5 - Investidor',
-        match: 90,
-        description: 'Para investidores com capital substancial para criar empregos nos EUA',
-        requirements: ['Investimento mínimo $800,000', 'Criar 10 empregos', 'Projeto aprovado'],
-        timeline: '2-3 anos',
-        cost: '$800,000 - $1,050,000+',
-        pros: ['Green Card direto', 'Família incluída', 'Liberdade de residência'],
-        cons: ['Alto investimento', 'Processo longo', 'Risco de investimento']
+        type: 'L-1',
+        name: 'Visto L-1 - Transferência entre Empresas',
+        match: 85,
+        description: 'Para funcionários transferidos para os EUA por uma empresa multinacional',
+        requirements: ['Empregado por pelo menos 1 ano', 'Transferência para empresa relacionada nos EUA'],
+        timeline: '2-6 meses',
+        cost: '$4,000 - $8,000',
+        pros: ['Caminho para Green Card', 'Família pode acompanhar', 'Possibilidade de dupla intenção'],
+        cons: ['Exige relacionamento entre empresas', 'Processo complexo']
       });
     }
-
-    if (answers.purpose === 'study') {
+    
+    // Visto E-2 para investidores
+    if (purpose === 'investment' && investment >= 100000) {
+      recs.push({
+        type: 'E-2',
+        name: 'Visto E-2 - Investidor',
+        match: 80,
+        description: 'Para investidores de países com tratado de comércio com os EUA',
+        requirements: ['Investimento significativo', 'Empresa ativa', 'Plano de negócios'],
+        timeline: '2-4 meses',
+        cost: '$5,000 - $15,000',
+        pros: ['Renovável indefinidamente', 'Pode trabalhar na empresa investida', 'Família pode acompanhar'],
+        cons: ['Investimento não é reembolsável', 'Exige geração de empregos']
+      });
+    }
+    
+    // Visto F-1 para estudantes
+    if (purpose === 'study') {
       recs.push({
         type: 'F-1',
         name: 'Visto F-1 - Estudante',
-        match: 88,
-        description: 'Para estudantes que desejam cursar graduação ou pós-graduação',
-        requirements: ['Aceitação em instituição aprovada', 'Comprovação financeira', 'Vínculos com país de origem'],
-        timeline: '3-6 meses',
-        cost: '$160 + taxas escolares',
-        pros: ['Permite estudo legal', 'OPT após formatura', 'Possibilidade de H1-B'],
-        cons: ['Trabalho limitado', 'Temporário', 'Custos educacionais altos']
-      });
-    }
-
-    if (answers.purpose === 'work' && answers.jobOffer === 'no' && answers.investment === 'medium') {
-      recs.push({
-        type: 'E-2',
-        name: 'Visto E-2 - Investidor de Tratado',
         match: 75,
-        description: 'Para investidores de países com tratado comercial com os EUA',
-        requirements: ['Nacionalidade de país com tratado', 'Investimento substancial', 'Negócio ativo'],
-        timeline: '3-6 meses',
-        cost: '$50,000 - $200,000+',
-        pros: ['Renovável indefinidamente', 'Família incluída', 'Flexibilidade de negócio'],
-        cons: ['Dependente do negócio', 'Não leva ao Green Card', 'Requer nacionalidade específica']
+        description: 'Para estudantes matriculados em instituições acadêmicas nos EUA',
+        requirements: ['Aceitação em escola/universidade', 'Comprovação financeira', 'Intenção de retorno ao país de origem'],
+        timeline: '2-3 meses',
+        cost: '$350 - $500',
+        pros: ['Permite trabalho limitado no campus', 'Pode solicitar OPT/CPT', 'Pode trazer dependentes'],
+        cons: ['Não pode trabalhar fora do campus sem autorização', 'Custos de educação elevados']
       });
     }
-
+    
+    // Visto B-1/B-2 como fallback
     if (recs.length === 0) {
       recs.push({
         type: 'B-1/B-2',
@@ -213,19 +460,50 @@ const VisaMatch = () => {
         cons: ['Temporário', 'Não permite trabalho', 'Não leva à residência']
       });
     }
-
-    setRecommendations(recs.sort((a, b) => b.match - a.match));
-    setShowResults(true);
+    
+    return recs;
+  };
+  
+  const updateFormWithRecommendations = async (formId: string, recommendations: VisaRecommendation[]) => {
+    try {
+      await supabase
+        .from('multistep_forms')
+        .update({
+          action_plan: JSON.stringify(recommendations),
+          system_metadata: {
+            last_ai_interaction: new Date().toISOString(),
+            data_completeness: 100,
+            confidence_score: recommendations[0]?.match || 0
+          }
+        })
+        .eq('id', formId);
+    } catch (error) {
+      console.error('Erro ao atualizar recomendações:', error);
+    }
   };
 
   const resetQuiz = () => {
     setCurrentStep(0);
-    setAnswers({});
+    setAnswers(initialFormData);
     setShowResults(false);
     setRecommendations([]);
+    
+    // Navegar para a URL limpa (sem formId)
+    navigate('/visa-match');
   };
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-petroleo animate-spin mx-auto mb-4" />
+          <p className="text-petroleo">Carregando sua análise...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const progress = ((currentStep + 1) / questions.length) * 100;
+  const progress = showResults ? 100 : ((currentStep + 1) / formSteps.length) * 100;
 
   if (showResults) {
     return (
@@ -394,7 +672,7 @@ const VisaMatch = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">
-                Pergunta {currentStep + 1} de {questions.length}
+                Etapa {currentStep + 1} de {formSteps.length}
               </span>
               <span className="text-sm text-gray-600">
                 {Math.round(progress)}% completo
@@ -403,56 +681,23 @@ const VisaMatch = () => {
             <Progress value={progress} className="h-2" />
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">
-                {questions[currentStep].question}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RadioGroup 
-                value={answers[questions[currentStep].id] || ''} 
-                onValueChange={handleAnswer}
-                className="space-y-4"
-              >
-                {questions[currentStep].options.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-50 cursor-pointer">
-                    <RadioGroupItem value={option.value} id={option.value} />
-                    <Label htmlFor={option.value} className="flex-1 cursor-pointer">
-                      {option.label}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-
-              <div className="flex justify-between mt-8">
-                <Button 
-                  onClick={prevStep} 
-                  disabled={currentStep === 0}
-                  variant="outline"
-                >
-                  Anterior
-                </Button>
-                <Button 
-                  onClick={nextStep}
-                  disabled={!answers[questions[currentStep].id]}
-                  className="bg-petroleo hover:bg-petroleo/90"
-                >
-                  {currentStep === questions.length - 1 ? (
-                    <>
-                      Ver Resultados
-                      <CheckCircle className="w-4 h-4 ml-2" />
-                    </>
-                  ) : (
-                    <>
-                      Próxima
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+<MultistepForm
+            steps={formSteps as FormStep<VisaMatchFormData>[]}
+            initialData={answers}
+            onSubmit={handleFormSubmit}
+            onStepChange={handleStepChange}
+            formType="visa"
+            autoSaveConfig={{
+              enabled: true,
+              interval: 30000,
+              storage: 'supabase',
+              key_prefix: 'visa_form'
+            }}
+            tableName="multistep_forms"
+            userId={userId || ''}
+            title="VisaMatch"
+            description="Análise inteligente para descobrir o visto ideal para seu perfil"
+          />
         </div>
       </div>
     </div>

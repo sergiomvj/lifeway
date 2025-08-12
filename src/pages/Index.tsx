@@ -6,9 +6,11 @@ import { getRandomFamilyImageUrl } from '@/utils';
 import Navbar from "@/components/Navbar";
 import ToolsSection from "@/components/ToolsSection";
 import Footer from "@/components/Footer";
+import { useConditionalNavigation } from '@/hooks/useConditionalNavigation';
 
 const Index = () => {
   const [backgroundImage, setBackgroundImage] = useState('');
+  const { navigateToHeroAction, navigateToTool } = useConditionalNavigation();
 
   useEffect(() => {
     // Usar a imagem fixa definida em getRandomFamilyImageUrl
@@ -30,6 +32,7 @@ const Index = () => {
         )}
         {/* Overlay azul petróleo com 85% de opacidade */}
         <div className="absolute inset-0 bg-petroleo/85" />
+        
         <div className="relative z-10 container mx-auto px-4 text-center text-white pb-4 md:pb-8">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Planeje sua jornada<br />
@@ -39,16 +42,21 @@ const Index = () => {
             Ferramentas inteligentes e especializadas para transformar seu sonho americano em realidade
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-petroleo text-white hover:bg-black">
-              <Link to="/dreams">
-                Começar agora
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
+            <Button 
+              size="lg" 
+              className="bg-petroleo text-white hover:bg-black"
+              onClick={() => navigateToHeroAction('start')}
+            >
+              Começar agora
+              <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-petroleo bg-petroleo text-white hover:bg-black hover:border-black hover:text-white">
-              <Link to="/visamatch" className="text-white hover:text-white">
-                Descobrir meu visto
-              </Link>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="border-petroleo bg-petroleo text-white hover:bg-black hover:border-black hover:text-white"
+              onClick={() => navigateToHeroAction('discover')}
+            >
+              Descobrir meu visto
             </Button>
           </div>
         </div>
@@ -96,16 +104,19 @@ const Index = () => {
             Junte-se a milhares de pessoas que já realizaram o sonho americano com nossa ajuda
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg">
-              <Link to="/dreams">
-                Criar meus sonhos
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
+            <Button 
+              size="lg"
+              onClick={() => navigateToTool('dreams')}
+            >
+              Criar meus sonhos
+              <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link to="/especialista">
-                Falar com especialista
-              </Link>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => navigateToTool('especialista')}
+            >
+              Falar com especialista
             </Button>
           </div>
         </div>

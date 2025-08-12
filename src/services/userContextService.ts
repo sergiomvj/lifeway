@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient';
+import { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { 
   UserContext, 
   ContextUpdate, 
@@ -20,9 +21,61 @@ import {
   REQUIRED_SECTIONS
 } from '@/types/userContext';
 
+type SubscriptionCallback = (payload: RealtimePostgresChangesPayload<UserContext>) => void;
+
 class UserContextService {
   private readonly TABLE_NAME = 'user_contexts';
   private readonly HISTORY_TABLE_NAME = 'user_context_history';
+  private subscriptionChannels: Map<string, RealtimeChannel> = new Map();
+
+  // Subscribe to context updates
+  subscribeToContextUpdates(userId: string, callback: SubscriptionCallback): () => void {
+    // Unsubscribe from any existing subscription for this user
+    this.unsubscribeFromContextUpdates(userId);
+
+    // Create new subscription
+    const channel = supabase
+      .channel(`user_context_${userId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: this.TABLE_NAME,
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log('Context update received:', payload);
+          callback(payload as RealtimePostgresChangesPayload<UserContext>);
+        }
+      )
+      .subscribe((status) => {
+        console.log(`Subscription status for user ${userId}:`, status);
+      });
+
+    // Store the channel for later cleanup
+    this.subscriptionChannels.set(userId, channel);
+
+    // Return unsubscribe function
+    return () => this.unsubscribeFromContextUpdates(userId);
+  }
+
+  // Unsubscribe from context updates
+  private unsubscribeFromContextUpdates(userId: string): void {
+    const channel = this.subscriptionChannels.get(userId);
+    if (channel) {
+      supabase.removeChannel(channel);
+      this.subscriptionChannels.delete(userId);
+    }
+  }
+
+  // Clean up all subscriptions
+  cleanupSubscriptions(): void {
+    this.subscriptionChannels.forEach((channel, userId) => {
+      supabase.removeChannel(channel);
+    });
+    this.subscriptionChannels.clear();
+  }
 
   // Create new user context
   async createContext(userId: string, initialData: Partial<UserContext>): Promise<UserContext> {
@@ -146,10 +199,10 @@ class UserContextService {
   async getContext(userId: string, query?: ContextQuery): Promise<ContextResponse | null> {
     try {
       const { data, error } = await supabase
-        .from(this.TABLE_NAME)
+        .from('user_contexts')
         .select('*')
         .eq('user_id', userId)
-        .order('version', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(1)
         .single();
 
@@ -568,5 +621,12 @@ class UserContextService {
 
 // Create singleton instance
 export const userContextService = new UserContextService();
+
+// Clean up subscriptions on window unload to prevent memory leaks
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    userContextService.cleanupSubscriptions();
+  });
+}
 
 export default userContextService;

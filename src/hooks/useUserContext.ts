@@ -18,18 +18,42 @@ export function useUserContext(userId?: string) {
   const queryClient = useQueryClient();
   const [currentUserId, setCurrentUserId] = useState<string | null>(userId || null);
 
-  // Get current user ID from auth if not provided
+  // Get current user ID from auth and listen for auth state changes
   useEffect(() => {
-    if (!userId) {
-      const getCurrentUser = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setCurrentUserId(user.id);
-        }
-      };
-      getCurrentUser();
+    if (userId) {
+      setCurrentUserId(userId);
+      return;
     }
-  }, [userId]);
+
+    // Initial check for current user
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUserId(user.id);
+      } else {
+        setCurrentUserId(null);
+      }
+    };
+    
+    getCurrentUser();
+
+    // Subscribe to auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed in useUserContext:', event);
+      if (session?.user) {
+        setCurrentUserId(session.user.id);
+      } else {
+        setCurrentUserId(null);
+      }
+      // Invalidate queries to force refetch
+      queryClient.invalidateQueries({ queryKey: ['userContext', currentUserId] });
+    });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [userId, queryClient, currentUserId]);
 
   // Query for user context
   const {

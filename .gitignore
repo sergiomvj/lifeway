@@ -9,9 +9,11 @@ lerna-debug.log*
 
 node_modules
 ExtraRepository
+migration
 dist
 dist-ssr
 *.local
+.env
 
 # Environment variables
 .env

@@ -14,6 +14,9 @@ import Especialista from "./pages/Especialista";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import TimelineFerramentas from "./pages/TimelineFerramentas";
+import Perfil from "./pages/Perfil";
+import MultistepForm from "./pages/MultistepForm";
 import AdminOpenAI from "./pages/AdminOpenAI";
 import FerramentasIndex from "./pages/ferramentas/index";
 import DestinosIndex from "./pages/destinos/index";
@@ -24,6 +27,11 @@ import BlogIndex from "./pages/blog/index";
 import Contato from "./pages/Contato";
 import NotFound from "./pages/NotFound";
 import { FavoriteCitiesProvider } from "./contexts/FavoriteCitiesContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { UserProvider } from "./contexts/UserContext";
+import { AuthTest } from "./components/test/AuthTest";
+import { EnvTest } from "./components/test/EnvTest";
+import { SupabaseTest } from "./components/test/SupabaseTest";
 
 // Lazy load ferramenta pages
 const CalcwayPage = lazy(() => import('./pages/ferramentas/calcway/index'));
@@ -51,7 +59,9 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <FavoriteCitiesProvider>
+        <AuthProvider>
+          <UserProvider>
+            <FavoriteCitiesProvider>
           <div className="min-h-screen flex flex-col">
             <main className="flex-1">
               <Routes>
@@ -63,6 +73,9 @@ const App = () => (
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/timeline-ferramentas" element={<ProtectedRoute><TimelineFerramentas /></ProtectedRoute>} />
+                <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+                <Route path="/multistep-form" element={<ProtectedRoute><MultistepForm /></ProtectedRoute>} />
                 <Route path="/admin/openai" element={<ProtectedRoute><AdminOpenAI /></ProtectedRoute>} />
                 <Route path="/ferramentas" element={<FerramentasIndex />} />
                 <Route path="/ferramentas/calcway" element={
@@ -105,11 +118,16 @@ const App = () => (
                 <Route path="/cities" element={<Cities />} />
                 <Route path="/blog" element={<BlogIndex />} />
                 <Route path="/contato" element={<Contato />} />
+                <Route path="/test/auth" element={<AuthTest />} />
+                <Route path="/test/env" element={<EnvTest />} />
+                <Route path="/test/supabase" element={<SupabaseTest />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
           </div>
-        </FavoriteCitiesProvider>
+            </FavoriteCitiesProvider>
+          </UserProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

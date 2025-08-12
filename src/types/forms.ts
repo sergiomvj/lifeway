@@ -1,5 +1,171 @@
 // Shared types for LifeWay forms and tools
 
+// Tipos para o sistema unificado de formulários
+export type FormType = 'profile' | 'dream' | 'visa' | 'especialista';
+export type FormStatus = 'draft' | 'in_progress' | 'completed' | 'archived';
+
+// Estrutura principal para todos os formulários
+export interface MultistepFormData {
+  // Metadados do formulário
+  id: string;
+  user_id: string | null;
+  form_type: FormType;
+  status: FormStatus;
+  version: string;
+  created_at: string;
+  updated_at: string;
+  completed_at: string | null;
+  
+  // Dados do formulário
+  form_data: {
+    // Dados Pessoais
+    personal_info?: {
+      full_name: string;
+      preferred_name?: string;
+      birth_date: string;
+      gender: string;
+      marital_status: string;
+      nationality: string;
+      current_country: string;
+      current_state: string;
+      current_city: string;
+      phone: string;
+      email: string;
+      emergency_contact: {
+        name: string;
+        relationship: string;
+        phone: string;
+      };
+    };
+    
+    // Formação e Experiência
+    education?: Array<{
+      level: string;
+      institution: string;
+      field_of_study: string;
+      start_year: number;
+      end_year: number | null;
+      is_completed: boolean;
+      country: string;
+    }>;
+    
+    work_experience?: Array<{
+      job_title: string;
+      company: string;
+      industry: string;
+      start_date: string;
+      end_date: string | null;
+      is_current: boolean;
+      country: string;
+      responsibilities: string[];
+      skills_used: string[];
+    }>;
+    
+    // Habilidades e Idiomas
+    languages?: Array<{
+      language: string;
+      proficiency: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | 'Nativo';
+      is_primary: boolean;
+    }>;
+    
+    skills?: Array<{
+      name: string;
+      category: string;
+      proficiency: 'Iniciante' | 'Intermediário' | 'Avançado' | 'Especialista';
+      years_of_experience: number;
+    }>;
+    
+    // Objetivos e Preferências
+    objectives?: {
+      primary_goal: 'work' | 'study' | 'invest' | 'family' | 'visit';
+      preferred_destinations: Array<{
+        country: string;
+        state: string;
+        city: string;
+        priority: number;
+      }>;
+      timeline: {
+        preferred_start: string;
+        flexibility: 'flexible' | 'moderate' | 'fixed';
+        urgency: 'immediate' | '6months' | '1year' | '2years';
+      };
+      budget: {
+        amount: number;
+        currency: string;
+        includes_family: boolean;
+      };
+    };
+    
+    // Dados específicos do Criador de Sonhos
+    dream_goals?: {
+      main_objective: string;
+      category: string;
+      priority: 'low' | 'medium' | 'high';
+      current_situation: string;
+      challenges: string[];
+      resources_available: string[];
+      action_steps: Array<{
+        description: string;
+        deadline: string;
+        completed: boolean;
+      }>;
+    };
+
+    // Dados específicos do VisaMatch
+    visa_match?: {
+      professional_info: ProfessionalInfo;
+      family_info: FamilyInfo;
+      travel_info: TravelInfo;
+      financial_info: FinancialInfo;
+      goals_info: GoalsInfo;
+    };
+    
+    // Dados específicos do VisaMatch
+    visa_profile?: {
+      purpose: 'work' | 'study' | 'invest' | 'family' | 'visit';
+      education_level: string;
+      years_of_experience: number;
+      job_offer: 'yes' | 'process' | 'no';
+      investment_capacity: 'low' | 'medium' | 'high' | 'very_high';
+      preferred_timeline: 'immediate' | '6months' | '1year' | '2years';
+      family_situation: {
+        has_spouse: boolean;
+        has_children: boolean;
+        children_under_21: number;
+      };
+      recommendations?: Array<{
+        visa_type: string;
+        match_score: number;
+        description: string;
+        requirements: string[];
+        timeline: string;
+        estimated_cost: string;
+        pros: string[];
+        cons: string[];
+      }>;
+    };
+    
+    // Dados específicos do Especialista Virtual
+    specialist_notes?: Array<{
+      id: string;
+      specialist_id: string;
+      note: string;
+      category: 'observation' | 'recommendation' | 'follow_up';
+      timestamp: string;
+    }>;
+  };
+  
+  // Metadados do sistema
+  system_metadata: {
+    last_ai_interaction: string;
+    data_completeness: number; // 0-100%
+    confidence_score: number; // 0-100
+    last_validation: string;
+    source: 'web' | 'mobile' | 'api';
+  };
+}
+
+// Interface de compatibilidade para manter compatibilidade com código existente
 export interface BaseFormData {
   id?: string;
   created_at?: string;
