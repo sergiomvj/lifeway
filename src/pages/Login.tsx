@@ -125,8 +125,8 @@ const Login = () => {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Login com Google */}
-            <Button 
+            {/* Login com Google desabilitado temporariamente para verificação Google */}
+            {/* <Button 
               variant="outline" 
               size="lg" 
               className="w-full"
@@ -134,7 +134,7 @@ const Login = () => {
             >
               <Mail className="w-4 h-4 mr-2" />
               {isLogin ? 'Entrar' : 'Cadastrar'} com Google
-            </Button>
+            </Button> */}
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
